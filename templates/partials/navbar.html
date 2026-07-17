@@ -1,0 +1,106 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+
+        <a
+            class="navbar-brand fw-bold"
+            href="{% url 'products:home' %}"
+        >
+            CostumeHub
+        </a>
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#anaMenu"
+            aria-controls="anaMenu"
+            aria-expanded="false"
+            aria-label="Menüyü aç"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div
+            class="collapse navbar-collapse"
+            id="anaMenu"
+        >
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="{% url 'products:home' %}"
+                    >
+                        Ana Sayfa
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="#"
+                    >
+                        İlanlar
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="#"
+                    >
+                        Kategoriler
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- Sağ Menü -->
+
+            <div class="d-flex gap-2 align-items-center">
+
+                {% if user.is_authenticated %}
+
+                    <span class="text-white">
+                        Hoş geldin, {{ user.username }}
+                    </span>
+
+                    <a
+                        href="#"
+                        class="btn btn-warning"
+                    >
+                        İlan Ver
+                    </a>
+
+                    <a
+                        href="{% url 'accounts:cikis' %}"
+                        class="btn btn-outline-light"
+                    >
+                        Çıkış Yap
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'accounts:giris' %}"
+                        class="btn btn-outline-light"
+                    >
+                        Giriş Yap
+                    </a>
+
+                    <a
+                        href="{% url 'accounts:kayit' %}"
+                        class="btn btn-warning"
+                    >
+                        Kayıt Ol
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+</nav>

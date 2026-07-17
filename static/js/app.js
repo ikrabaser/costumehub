@@ -1,0 +1,1 @@
+console.log("CostumeHub JavaScript dosyası çalışıyor.");

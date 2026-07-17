@@ -1,0 +1,50 @@
+body {
+    background-color: #ffffff;
+    color: #212529;
+}
+
+.hero-section {
+    min-height: 620px;
+    display: flex;
+    align-items: center;
+    padding: 80px 0;
+    background: linear-gradient(
+        135deg,
+        #ffffff 0%,
+        #f5f1ff 100%
+    );
+}
+
+.hero-card {
+    padding: 80px 40px;
+    border-radius: 24px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.hero-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.step-number {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #212529;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
