@@ -1,15 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import redirect, render
 
+from .forms import GirisFormu, KayitFormu
 
-def kayit_ol(request):
+
+def kayit(request):
     if request.user.is_authenticated:
         return redirect("products:home")
 
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = KayitFormu(request.POST)
 
         if form.is_valid():
             kullanici = form.save()
@@ -17,29 +18,28 @@ def kayit_ol(request):
 
             messages.success(
                 request,
-                "Hesabınız başarıyla oluşturuldu."
+                "Hesabınız başarıyla oluşturuldu. CostumeHub'a hoş geldiniz!",
             )
 
             return redirect("products:home")
     else:
-        form = UserCreationForm()
+        form = KayitFormu()
 
     return render(
         request,
         "accounts/kayit.html",
-        {"form": form}
+        {
+            "form": form,
+        },
     )
 
 
-def giris_yap(request):
+def giris(request):
     if request.user.is_authenticated:
         return redirect("products:home")
 
     if request.method == "POST":
-        form = AuthenticationForm(
-            request,
-            data=request.POST
-        )
+        form = GirisFormu(request, data=request.POST)
 
         if form.is_valid():
             kullanici = form.get_user()
@@ -47,26 +47,29 @@ def giris_yap(request):
 
             messages.success(
                 request,
-                "Başarıyla giriş yaptınız."
+                f"Hoş geldiniz, {kullanici.username}!",
             )
 
             return redirect("products:home")
     else:
-        form = AuthenticationForm()
+        form = GirisFormu()
 
     return render(
         request,
         "accounts/giris.html",
-        {"form": form}
+        {
+            "form": form,
+        },
     )
 
 
-def cikis_yap(request):
-    logout(request)
+def cikis(request):
+    if request.method == "POST":
+        logout(request)
 
-    messages.success(
-        request,
-        "Hesabınızdan çıkış yaptınız."
-    )
+        messages.success(
+            request,
+            "Hesabınızdan başarıyla çıkış yaptınız.",
+        )
 
     return redirect("products:home")
