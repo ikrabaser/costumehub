@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ ilan.baslik }} | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="mb-4">
+            <a
+                href="{% url 'products:ilan_listesi' %}"
+                class="text-decoration-none text-dark"
+            >
+                ← İlanlara Dön
+            </a>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-lg-8">
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+
+                            <span class="badge text-bg-warning">
+                                {{ ilan.kategori.ad }}
+                            </span>
+
+                            {% if ilan.mevcut_mu %}
+                                <span class="badge text-bg-success">
+                                    Kiralamaya Uygun
+                                </span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">
+                                    Şu Anda Uygun Değil
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <h1 class="fw-bold mb-3">
+                            {{ ilan.baslik }}
+                        </h1>
+
+                        <p class="text-secondary fs-5">
+                            {{ ilan.aciklama }}
+                        </p>
+
+                        <hr class="my-4">
+
+                        <div class="row g-4">
+
+                            <div class="col-sm-6 col-md-4">
+                                <div class="small text-secondary">
+                                    Beden
+                                </div>
+
+                                <div class="fw-semibold">
+                                    {{ ilan.get_beden_display }}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4">
+                                <div class="small text-secondary">
+                                    Renk
+                                </div>
+
+                                <div class="fw-semibold">
+                                    {{ ilan.renk }}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4">
+                                <div class="small text-secondary">
+                                    Şehir
+                                </div>
+
+                                <div class="fw-semibold">
+                                    {{ ilan.sehir }}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4">
+                                <div class="small text-secondary">
+                                    Günlük kiralama
+                                </div>
+
+                                <div class="fw-bold fs-5">
+                                    {{ ilan.gunluk_fiyat }} ₺
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4">
+                                <div class="small text-secondary">
+                                    Depozito
+                                </div>
+
+                                <div class="fw-semibold">
+                                    {{ ilan.depozito }} ₺
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+
+                        <h2 class="h5 fw-bold mb-3">
+                            İlan Sahibi
+                        </h2>
+
+                        <div class="mb-2">
+                            <div class="small text-secondary">
+                                Kullanıcı
+                            </div>
+
+                            <div class="fw-semibold">
+                                {{ ilan.ilan_sahibi.username }}
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <div class="small text-secondary">
+                                Şehir
+                            </div>
+
+                            <div class="fw-semibold">
+                                {{ ilan.ilan_sahibi.profil.sehir|default:"Belirtilmemiş" }}
+                            </div>
+                        </div>
+
+                        {% if ilan.ilan_sahibi.profil.biyografi %}
+                            <div class="mt-3">
+                                <div class="small text-secondary">
+                                    Hakkında
+                                </div>
+
+                                <p class="mb-0">
+                                    {{ ilan.ilan_sahibi.profil.biyografi }}
+                                </p>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+
+                        <div class="small text-secondary">
+                            Günlük kiralama ücreti
+                        </div>
+
+                        <div class="display-6 fw-bold mb-3">
+                            {{ ilan.gunluk_fiyat }} ₺
+                        </div>
+
+                        {% if ilan.mevcut_mu %}
+                            <button
+                                type="button"
+                                class="btn btn-dark w-100"
+                                disabled
+                            >
+                                Kiralama Talebi Oluştur
+                            </button>
+
+                            <div class="form-text text-center mt-2">
+                                Kiralama sistemi sonraki aşamada eklenecek.
+                            </div>
+                        {% else %}
+                            <button
+                                type="button"
+                                class="btn btn-secondary w-100"
+                                disabled
+                            >
+                                Şu Anda Kiralanamaz
+                            </button>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

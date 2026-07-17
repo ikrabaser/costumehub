@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}
+    İlanlar | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+
+            <div>
+                <span class="badge text-bg-warning mb-2">
+                    CostumeHub İlanları
+                </span>
+
+                <h1 class="fw-bold mb-1">
+                    Kiralık Kostümleri Keşfet
+                </h1>
+
+                <p class="text-secondary mb-0">
+                    Sana uygun kostüm ve özel gün kıyafetlerini incele.
+                </p>
+            </div>
+
+            {% if user.is_authenticated %}
+                <a
+                    href="{% url 'products:ilan_olustur' %}"
+                    class="btn btn-dark mt-3 mt-md-0"
+                >
+                    Yeni İlan Ver
+                </a>
+            {% endif %}
+
+        </div>
+
+        {% if ilanlar %}
+
+            <div class="row g-4">
+
+                {% for ilan in ilanlar %}
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="card h-100 border-0 shadow-sm">
+
+                            <div class="card-body p-4">
+
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+
+                                    <span class="badge text-bg-warning">
+                                        {{ ilan.kategori.ad }}
+                                    </span>
+
+                                    <span class="badge text-bg-success">
+                                        Kiralamaya Uygun
+                                    </span>
+
+                                </div>
+
+                                <h2 class="h5 fw-bold">
+                                    {{ ilan.baslik }}
+                                </h2>
+
+                                <p class="text-secondary">
+                                    {{ ilan.aciklama|truncatechars:110 }}
+                                </p>
+
+                                <div class="mb-3">
+
+                                    <div class="small text-secondary mb-1">
+                                        Beden
+                                    </div>
+
+                                    <div class="fw-semibold">
+                                        {{ ilan.get_beden_display }}
+                                    </div>
+
+                                </div>
+
+                                <div class="row mb-3">
+
+                                    <div class="col-6">
+                                        <div class="small text-secondary">
+                                            Renk
+                                        </div>
+
+                                        <div class="fw-semibold">
+                                            {{ ilan.renk }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="small text-secondary">
+                                            Şehir
+                                        </div>
+
+                                        <div class="fw-semibold">
+                                            {{ ilan.sehir }}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <hr>
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <div class="small text-secondary">
+                                            Günlük kiralama
+                                        </div>
+
+                                        <div class="h5 fw-bold mb-0">
+                                            {{ ilan.gunluk_fiyat }} ₺
+                                        </div>
+                                    </div>
+
+                                    <a
+    href="{% url 'products:ilan_detay' ilan.id %}"
+    class="btn btn-outline-dark"
+>
+    İncele
+</a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+
+                    <div class="display-5 mb-3">
+                        🎭
+                    </div>
+
+                    <h2 class="h4 fw-bold">
+                        Henüz yayınlanmış ilan bulunmuyor
+                    </h2>
+
+                    <p class="text-secondary">
+                        İlk kostüm ilanını sen yayınlayabilirsin.
+                    </p>
+
+                    {% if user.is_authenticated %}
+                        <a
+                            href="{% url 'products:ilan_olustur' %}"
+                            class="btn btn-dark"
+                        >
+                            İlan Ver
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
