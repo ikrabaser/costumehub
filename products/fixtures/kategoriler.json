@@ -1,0 +1,74 @@
+[
+    {
+        "model": "products.kategori",
+        "pk": 1,
+        "fields": {
+            "ad": "Cosplay",
+            "slug": "cosplay",
+            "aktif_mi": true
+        }
+    },
+    {
+        "model": "products.kategori",
+        "pk": 2,
+        "fields": {
+            "ad": "Tiyatro",
+            "slug": "tiyatro",
+            "aktif_mi": true
+        }
+    },
+    {
+        "model": "products.kategori",
+        "pk": 3,
+        "fields": {
+            "ad": "Mezuniyet",
+            "slug": "mezuniyet",
+            "aktif_mi": true
+        }
+    },
+    {
+        "model": "products.kategori",
+        "pk": 4,
+        "fields": {
+            "ad": "Düğün",
+            "slug": "dugun",
+            "aktif_mi": true
+        }
+    },
+    {
+        "model": "products.kategori",
+        "pk": 5,
+        "fields": {
+            "ad": "Özel Gün",
+            "slug": "ozel-gun",
+            "aktif_mi": true
+        }
+    },
+    {
+        "model": "products.kategori",
+        "pk": 6,
+        "fields": {
+            "ad": "Çocuk Kostümleri",
+            "slug": "cocuk-kostumleri",
+            "aktif_mi": true
+        }
+    },
+    {
+        "model": "products.kategori",
+        "pk": 7,
+        "fields": {
+            "ad": "Tarihî Kostümler",
+            "slug": "tarihi-kostumler",
+            "aktif_mi": true
+        }
+    },
+    {
+        "model": "products.kategori",
+        "pk": 8,
+        "fields": {
+            "ad": "Aksesuarlar",
+            "slug": "aksesuarlar",
+            "aktif_mi": true
+        }
+    }
+]
