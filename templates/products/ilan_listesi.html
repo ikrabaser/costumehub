@@ -140,6 +140,23 @@
         {% else %}
 
             <div class="card border-0 shadow-sm">
+                {% if ilan.fotograf %}
+    <img
+        src="{{ ilan.fotograf.url }}"
+        class="card-img-top"
+        alt="{{ ilan.baslik }}"
+        style="height: 240px; object-fit: cover;"
+    >
+{% else %}
+    <div
+        class="d-flex align-items-center justify-content-center bg-light"
+        style="height: 240px;"
+    >
+        <span class="display-4">
+            🎭
+        </span>
+    </div>
+{% endif %}
                 <div class="card-body text-center py-5">
 
                     <div class="display-5 mb-3">

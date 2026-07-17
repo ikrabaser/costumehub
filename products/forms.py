@@ -11,6 +11,7 @@ class IlanFormu(forms.ModelForm):
             "kategori",
             "baslik",
             "aciklama",
+            "fotograf",
             "beden",
             "renk",
             "gunluk_fiyat",
@@ -48,6 +49,13 @@ class IlanFormu(forms.ModelForm):
                     "rows": 5,
                 }
             ),
+
+            "fotograf": forms.ClearableFileInput(
+    attrs={
+        "class": "form-control",
+        "accept": "image/*",
+    }
+), 
             "beden": forms.Select(
                 attrs={
                     "class": "form-select",

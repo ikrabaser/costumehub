@@ -23,6 +23,23 @@
             <div class="col-lg-8">
 
                 <div class="card border-0 shadow-sm">
+                    {% if ilan.fotograf %}
+    <img
+        src="{{ ilan.fotograf.url }}"
+        class="card-img-top"
+        alt="{{ ilan.baslik }}"
+        style="max-height: 520px; object-fit: cover;"
+    >
+{% else %}
+    <div
+        class="d-flex align-items-center justify-content-center bg-light"
+        style="height: 380px;"
+    >
+        <span class="display-1">
+            🎭
+        </span>
+    </div>
+{% endif %}
                     <div class="card-body p-4 p-md-5">
 
                         <div class="d-flex flex-wrap gap-2 mb-3">

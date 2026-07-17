@@ -14,6 +14,10 @@ def home(request):
 def ilan_olustur(request):
     if request.method == "POST":
         form = IlanFormu(request.POST)
+        form = IlanFormu(
+    request.POST,
+    request.FILES
+)
 
         if form.is_valid():
             ilan = form.save(commit=False)

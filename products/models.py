@@ -69,6 +69,13 @@ class Ilan(models.Model):
         verbose_name="Açıklama",
     )
 
+    fotograf = models.ImageField(
+    upload_to="ilanlar/",
+    blank=True,
+    null=True,
+    verbose_name="İlan fotoğrafı",
+)
+
     beden = models.CharField(
         max_length=20,
         choices=BEDEN_SECENEKLERI,
@@ -79,6 +86,7 @@ class Ilan(models.Model):
         max_length=50,
         verbose_name="Renk",
     )
+    
 
     gunluk_fiyat = models.DecimalField(
         max_digits=10,
