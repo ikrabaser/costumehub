@@ -51,6 +51,12 @@
                     <span class="navbar-text text-light me-2">
                         Hoş geldin, {{ user.username }}
                     </span>
+                    <a
+    href="{% url 'accounts:profil' %}"
+    class="btn btn-outline-light btn-sm"
+>
+    Profilim
+</a>
 
                     <a
                         href="#"
@@ -97,4 +103,4 @@
         </div>
 
     </div>
-</nav>
+</nav> 

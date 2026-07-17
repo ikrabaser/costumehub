@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
-
+from .models import Profil
 
 class KayitFormu(UserCreationForm):
     email = forms.EmailField(
@@ -74,3 +74,36 @@ class GirisFormu(AuthenticationForm):
             }
         ),
     )
+
+class ProfilFormu(forms.ModelForm):
+    class Meta:
+        model = Profil
+        fields = ["telefon", "sehir", "biyografi"]
+
+        labels = {
+            "telefon": "Telefon",
+            "sehir": "Şehir",
+            "biyografi": "Biyografi",
+        }
+
+        widgets = {
+            "telefon": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Telefon numaranızı girin",
+                }
+            ),
+            "sehir": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Şehrinizi girin",
+                }
+            ),
+            "biyografi": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Kendinizden kısaca bahsedin",
+                    "rows": 4,
+                }
+            ),
+        }
