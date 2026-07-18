@@ -1,9 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.db.models import Q
 from .forms import IlanFormu
-from .models import Ilan
+from .models import Ilan,Kategori
 
 
 def home(request):
@@ -53,8 +53,52 @@ def ilan_listesi(request):
         "ilan_sahibi"
     ).order_by("-olusturulma_tarihi")
 
+    arama = request.GET.get("arama", "").strip()
+    kategori = request.GET.get("kategori", "").strip()
+    beden = request.GET.get("beden", "").strip()
+    sehir = request.GET.get("sehir", "").strip()
+    maksimum_fiyat = request.GET.get("maksimum_fiyat", "").strip()
+
+    if arama:
+        ilanlar = ilanlar.filter(
+            Q(baslik__icontains=arama)
+            | Q(aciklama__icontains=arama)
+            | Q(renk__icontains=arama)
+        )
+
+    if kategori:
+        ilanlar = ilanlar.filter(kategori_id=kategori)
+
+    if beden:
+        ilanlar = ilanlar.filter(beden=beden)
+
+    if sehir:
+        ilanlar = ilanlar.filter(sehir__icontains=sehir)
+
+    if maksimum_fiyat:
+        try:
+            maksimum_fiyat_degeri = float(maksimum_fiyat)
+
+            if maksimum_fiyat_degeri >= 0:
+                ilanlar = ilanlar.filter(
+                    gunluk_fiyat__lte=maksimum_fiyat_degeri
+                )
+        except ValueError:
+            pass
+
+    kategoriler = Kategori.objects.filter(
+        aktif_mi=True
+    ).order_by("ad")
+
     context = {
-        "ilanlar": ilanlar
+        "ilanlar": ilanlar,
+        "kategoriler": kategoriler,
+        "beden_secenekleri": Ilan.BEDEN_SECENEKLERI,
+        "arama": arama,
+        "secili_kategori": kategori,
+        "secili_beden": beden,
+        "sehir": sehir,
+        "maksimum_fiyat": maksimum_fiyat,
     }
 
     return render(
