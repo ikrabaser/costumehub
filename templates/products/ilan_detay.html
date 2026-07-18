@@ -185,17 +185,39 @@
                         </div>
 
                         {% if ilan.mevcut_mu %}
+                        {% if user.is_authenticated %}
+
+                        {% if user == ilan.ilan_sahibi %}
+                    
                             <button
                                 type="button"
-                                class="btn btn-dark w-100"
+                                class="btn btn-secondary w-100"
                                 disabled
                             >
-                                Kiralama Talebi Oluştur
+                                Bu İlan Size Ait
                             </button>
-
-                            <div class="form-text text-center mt-2">
-                                Kiralama sistemi sonraki aşamada eklenecek.
-                            </div>
+                    
+                        {% else %}
+                    
+                            <a
+                                href="{% url 'rentals:kiralama_talebi_olustur' ilan.id %}"
+                                class="btn btn-dark w-100"
+                            >
+                                Kiralama Talebi Oluştur
+                            </a>
+                    
+                        {% endif %}
+                    
+                    {% else %}
+                    
+                        <a
+                            href="{% url 'accounts:giris' %}"
+                            class="btn btn-dark w-100"
+                        >
+                            Talep Oluşturmak İçin Giriş Yap
+                        </a>
+                    
+                    {% endif %}
                         {% else %}
                             <button
                                 type="button"

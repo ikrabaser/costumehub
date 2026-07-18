@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Kiralama Talebi | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="mb-4">
+                    <a
+                        href="{% url 'products:ilan_detay' ilan.id %}"
+                        class="text-decoration-none text-dark"
+                    >
+                        ← İlana Dön
+                    </a>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+
+                        <span class="badge text-bg-warning mb-2">
+                            Kiralama Talebi
+                        </span>
+
+                        <h1 class="h3 fw-bold mb-2">
+                            {{ ilan.baslik }}
+                        </h1>
+
+                        <p class="text-secondary mb-4">
+                            Kiralama tarihlerini seç ve ilan sahibine
+                            talebini gönder.
+                        </p>
+
+                        <div class="alert alert-light border mb-4">
+                            <div class="row g-3">
+
+                                <div class="col-sm-6">
+                                    <div class="small text-secondary">
+                                        Günlük ücret
+                                    </div>
+
+                                    <div class="fw-bold">
+                                        {{ ilan.gunluk_fiyat }} ₺
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="small text-secondary">
+                                        Depozito
+                                    </div>
+
+                                    <div class="fw-bold">
+                                        {{ ilan.depozito }} ₺
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <form method="POST" novalidate>
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for hata in form.non_field_errors %}
+                                        <div>{{ hata }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {% for alan in form %}
+                                <div class="mb-3">
+
+                                    <label
+                                        for="{{ alan.id_for_label }}"
+                                        class="form-label fw-semibold"
+                                    >
+                                        {{ alan.label }}
+                                    </label>
+
+                                    {{ alan }}
+
+                                    {% for hata in alan.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ hata }}
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+                            {% endfor %}
+
+                            <div class="alert alert-warning mt-4">
+                                Toplam ücret, seçtiğiniz gün sayısına göre
+                                otomatik hesaplanacaktır.
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-2 mt-4">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-dark"
+                                >
+                                    Talebi Gönder
+                                </button>
+
+                                <a
+                                    href="{% url 'products:ilan_detay' ilan.id %}"
+                                    class="btn btn-outline-secondary"
+                                >
+                                    Vazgeç
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
