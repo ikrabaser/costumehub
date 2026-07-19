@@ -31,7 +31,10 @@ def kiralama_talebi_olustur(request, ilan_id):
         )
 
     if request.method == "POST":
-        form = KiralamaTalebiFormu(request.POST)
+        form = KiralamaTalebiFormu(
+            request.POST,
+            ilan=ilan,
+        )
 
         if form.is_valid():
             talep = form.save(commit=False)
@@ -63,7 +66,9 @@ def kiralama_talebi_olustur(request, ilan_id):
             )
 
     else:
-        form = KiralamaTalebiFormu()
+        form = KiralamaTalebiFormu(
+            ilan=ilan,
+        )
 
     return render(
         request,
@@ -153,6 +158,8 @@ def kiralama_talebi_reddet(request, talep_id):
     return redirect(
         "rentals:gelen_kiralama_talepleri",
     )
+
+
 @login_required
 def benim_kiralama_taleplerim(request):
     talepler = (
