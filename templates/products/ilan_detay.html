@@ -102,6 +102,28 @@
         outline-offset: 1px;
     }
 
+    .takvim-gunu-secilebilir {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .takvim-gunu-secilebilir:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
+    }
+
+    .takvim-gunu-secili {
+        border-color: #0d6efd !important;
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+        text-decoration: none !important;
+    }
+
+    .takvim-renk-secili {
+        border-color: #0d6efd;
+        background-color: #0d6efd;
+    }
+
     .takvim-aciklama {
         display: flex;
         flex-wrap: wrap;
@@ -353,10 +375,10 @@
                                 {% else %}
 
                                     <a
-                                        href="{% url 'rentals:kiralama_talebi_olustur' ilan.id %}"
+                                        href="#uygunluk-takvimi"
                                         class="btn btn-dark w-100"
                                     >
-                                        Kiralama Talebi Oluştur
+                                        Takvimden Tarih Seç
                                     </a>
 
                                 {% endif %}
@@ -388,12 +410,19 @@
                 </div>
 
                 <!-- Uygunluk takvimi -->
-                <div class="card border-0 shadow-sm">
+                <div
+                    id="uygunluk-takvimi"
+                    class="card border-0 shadow-sm"
+                >
                     <div class="card-body p-4">
 
-                        <h2 class="h5 fw-bold mb-4">
+                        <h2 class="h5 fw-bold mb-2">
                             📅 Uygunluk Takvimi
                         </h2>
+
+                        <p class="small text-secondary mb-4">
+                            Önce başlangıç, ardından bitiş tarihini seçin.
+                        </p>
 
                         <div class="takvim-kapsayici">
 
@@ -462,6 +491,97 @@
                                     Geçmiş
                                 </div>
 
+                                <div class="takvim-aciklama-ogesi">
+                                    <span
+                                        class="takvim-renk takvim-renk-secili"
+                                    ></span>
+                                    Seçilen
+                                </div>
+
+                            </div>
+
+                            <div
+                                id="tarihSecimUyarisi"
+                                class="alert alert-danger d-none mt-4 mb-0"
+                            ></div>
+
+                            <div
+                                id="kiralamaOzeti"
+                                class="border rounded-3 p-3 mt-4 d-none"
+                            >
+                                <h3 class="h6 fw-bold mb-3">
+                                    Kiralama Özeti
+                                </h3>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-6">
+                                        <div class="small text-secondary">
+                                            Başlangıç
+                                        </div>
+                                        <div
+                                            id="ozetBaslangic"
+                                            class="fw-semibold"
+                                        >-</div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="small text-secondary">
+                                            Bitiş
+                                        </div>
+                                        <div
+                                            id="ozetBitis"
+                                            class="fw-semibold"
+                                        >-</div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="small text-secondary">
+                                            Toplam gün
+                                        </div>
+                                        <div
+                                            id="ozetGun"
+                                            class="fw-semibold"
+                                        >-</div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="small text-secondary">
+                                            Toplam ücret
+                                        </div>
+                                        <div
+                                            id="ozetTutar"
+                                            class="fw-bold"
+                                        >-</div>
+                                    </div>
+                                </div>
+
+                                {% if user.is_authenticated %}
+                                    {% if user == ilan.ilan_sahibi %}
+                                        <button
+                                            type="button"
+                                            class="btn btn-secondary w-100"
+                                            disabled
+                                        >
+                                            Bu İlan Size Ait
+                                        </button>
+                                    {% else %}
+                                        <a
+                                            id="kiralamaButonu"
+                                            href="#"
+                                            class="btn btn-dark w-100 disabled"
+                                            aria-disabled="true"
+                                        >
+                                            Önce Tarih Aralığı Seçin
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a
+                                        href="{% url 'accounts:giris' %}"
+                                        class="btn btn-dark w-100"
+                                    >
+                                        Talep Oluşturmak İçin Giriş Yap
+                                    </a>
+                                {% endif %}
                             </div>
 
                         </div>
@@ -518,10 +638,26 @@
             "{{ dolu_tarihler_json|escapejs }}"
         );
 
+        const gunlukFiyat = Number(
+            "{{ ilan.gunluk_fiyat|stringformat:'f' }}".replace(",", ".")
+        );
+
+        const kiralamaTalebiAdresi =
+            "{% url 'rentals:kiralama_talebi_olustur' ilan.id %}";
+
         const takvimAyYil = document.getElementById("takvimAyYil");
         const takvimGunler = document.getElementById("takvimGunler");
         const oncekiAyButonu = document.getElementById("oncekiAyButonu");
         const sonrakiAyButonu = document.getElementById("sonrakiAyButonu");
+        const kiralamaOzeti = document.getElementById("kiralamaOzeti");
+        const ozetBaslangic = document.getElementById("ozetBaslangic");
+        const ozetBitis = document.getElementById("ozetBitis");
+        const ozetGun = document.getElementById("ozetGun");
+        const ozetTutar = document.getElementById("ozetTutar");
+        const kiralamaButonu = document.getElementById("kiralamaButonu");
+        const tarihSecimUyarisi = document.getElementById(
+            "tarihSecimUyarisi"
+        );
 
         const ayAdlari = [
             "Ocak",
@@ -539,15 +675,15 @@
         ];
 
         const bugun = new Date();
-
         bugun.setHours(0, 0, 0, 0);
 
         let gosterilenYil = bugun.getFullYear();
         let gosterilenAy = bugun.getMonth();
+        let secilenBaslangic = null;
+        let secilenBitis = null;
 
         function metniTariheCevir(tarihMetni) {
             const parcalar = tarihMetni.split("-");
-
             const yil = Number(parcalar[0]);
             const ay = Number(parcalar[1]) - 1;
             const gun = Number(parcalar[2]);
@@ -555,12 +691,27 @@
             return new Date(yil, ay, gun);
         }
 
+        function tarihiMetneCevir(tarih) {
+            const yil = tarih.getFullYear();
+            const ay = String(tarih.getMonth() + 1).padStart(2, "0");
+            const gun = String(tarih.getDate()).padStart(2, "0");
+
+            return `${yil}-${ay}-${gun}`;
+        }
+
+        function tarihiGoster(tarih) {
+            return tarih.toLocaleDateString("tr-TR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            });
+        }
+
         function tarihDoluMu(tarih) {
             return doluTarihAraliklari.some(function (tarihAraligi) {
                 const baslangicTarihi = metniTariheCevir(
                     tarihAraligi.baslangic
                 );
-
                 const bitisTarihi = metniTariheCevir(
                     tarihAraligi.bitis
                 );
@@ -572,6 +723,20 @@
             });
         }
 
+        function araliktaDoluTarihVarMi(baslangic, bitis) {
+            const kontrolTarihi = new Date(baslangic);
+
+            while (kontrolTarihi <= bitis) {
+                if (tarihDoluMu(kontrolTarihi)) {
+                    return true;
+                }
+
+                kontrolTarihi.setDate(kontrolTarihi.getDate() + 1);
+            }
+
+            return false;
+        }
+
         function ayniGunMu(birinciTarih, ikinciTarih) {
             return (
                 birinciTarih.getFullYear() ===
@@ -581,6 +746,109 @@
                 birinciTarih.getDate() ===
                     ikinciTarih.getDate()
             );
+        }
+
+        function tarihSeciliAraliktaMi(tarih) {
+            if (!secilenBaslangic) {
+                return false;
+            }
+
+            if (!secilenBitis) {
+                return ayniGunMu(tarih, secilenBaslangic);
+            }
+
+            return (
+                tarih >= secilenBaslangic &&
+                tarih <= secilenBitis
+            );
+        }
+
+        function uyarisiGoster(mesaj) {
+            tarihSecimUyarisi.textContent = mesaj;
+            tarihSecimUyarisi.classList.remove("d-none");
+        }
+
+        function uyariyiGizle() {
+            tarihSecimUyarisi.textContent = "";
+            tarihSecimUyarisi.classList.add("d-none");
+        }
+
+        function kiralamaOzetiniGuncelle() {
+            if (!secilenBaslangic) {
+                kiralamaOzeti.classList.add("d-none");
+                return;
+            }
+
+            kiralamaOzeti.classList.remove("d-none");
+            ozetBaslangic.textContent = tarihiGoster(secilenBaslangic);
+
+            if (!secilenBitis) {
+                ozetBitis.textContent = "Bitiş tarihini seçin";
+                ozetGun.textContent = "-";
+                ozetTutar.textContent = "-";
+
+                if (kiralamaButonu) {
+                    kiralamaButonu.href = "#";
+                    kiralamaButonu.classList.add("disabled");
+                    kiralamaButonu.setAttribute("aria-disabled", "true");
+                    kiralamaButonu.textContent =
+                        "Önce Bitiş Tarihini Seçin";
+                }
+
+                return;
+            }
+
+            const toplamGun = Math.round(
+                (secilenBitis - secilenBaslangic) / 86400000
+            ) + 1;
+            const toplamTutar = toplamGun * gunlukFiyat;
+
+            ozetBitis.textContent = tarihiGoster(secilenBitis);
+            ozetGun.textContent = `${toplamGun} gün`;
+            ozetTutar.textContent =
+                toplamTutar.toLocaleString("tr-TR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }) + " ₺";
+
+            if (kiralamaButonu) {
+                const baslangicMetni = tarihiMetneCevir(
+                    secilenBaslangic
+                );
+                const bitisMetni = tarihiMetneCevir(secilenBitis);
+
+                kiralamaButonu.href =
+                    kiralamaTalebiAdresi +
+                    `?baslangic=${baslangicMetni}` +
+                    `&bitis=${bitisMetni}`;
+                kiralamaButonu.classList.remove("disabled");
+                kiralamaButonu.removeAttribute("aria-disabled");
+                kiralamaButonu.textContent =
+                    "Kiralama Talebi Oluştur";
+            }
+        }
+
+        function tarihSec(tarih) {
+            uyariyiGizle();
+
+            if (!secilenBaslangic || secilenBitis) {
+                secilenBaslangic = new Date(tarih);
+                secilenBitis = null;
+            } else if (tarih < secilenBaslangic) {
+                secilenBaslangic = new Date(tarih);
+                secilenBitis = null;
+            } else if (araliktaDoluTarihVarMi(secilenBaslangic, tarih)) {
+                uyarisiGoster(
+                    "Seçtiğiniz tarih aralığında dolu gün bulunuyor. " +
+                    "Lütfen farklı bir bitiş tarihi seçin."
+                );
+                return;
+            } else {
+                secilenBitis = new Date(tarih);
+            }
+
+            takvimiOlustur();
+            kiralamaOzetiniGuncelle();
         }
 
         function takvimiOlustur() {
@@ -602,7 +870,6 @@
             );
 
             const ayinGunSayisi = ayinSonGunu.getDate();
-
             let baslangicBoslukSayisi = ayinIlkGunu.getDay() - 1;
 
             if (baslangicBoslukSayisi === -1) {
@@ -615,10 +882,8 @@
                 bosluk++
             ) {
                 const bosGun = document.createElement("div");
-
                 bosGun.className =
                     "takvim-gunu takvim-gunu-bos";
-
                 takvimGunler.appendChild(bosGun);
             }
 
@@ -631,8 +896,8 @@
 
                 tarih.setHours(0, 0, 0, 0);
 
-                const gunKutusu = document.createElement("div");
-
+                const gunKutusu = document.createElement("button");
+                gunKutusu.type = "button";
                 gunKutusu.classList.add("takvim-gunu");
                 gunKutusu.textContent = gun;
 
@@ -640,20 +905,27 @@
                     gunKutusu.classList.add(
                         "takvim-gunu-gecmis"
                     );
-
+                    gunKutusu.disabled = true;
                     gunKutusu.title = "Geçmiş tarih";
                 } else if (tarihDoluMu(tarih)) {
                     gunKutusu.classList.add(
                         "takvim-gunu-dolu"
                     );
-
+                    gunKutusu.disabled = true;
                     gunKutusu.title = "Bu tarih dolu";
                 } else {
                     gunKutusu.classList.add(
-                        "takvim-gunu-musait"
+                        "takvim-gunu-musait",
+                        "takvim-gunu-secilebilir"
                     );
+                    gunKutusu.title = "Bu tarihi seç";
+                    gunKutusu.addEventListener("click", function () {
+                        tarihSec(tarih);
+                    });
+                }
 
-                    gunKutusu.title = "Bu tarih müsait";
+                if (tarihSeciliAraliktaMi(tarih)) {
+                    gunKutusu.classList.add("takvim-gunu-secili");
                 }
 
                 if (ayniGunMu(tarih, bugun)) {

@@ -67,8 +67,22 @@ def kiralama_talebi_olustur(request, ilan_id):
             )
 
     else:
+        baslangic_tarihi = request.GET.get(
+            "baslangic",
+            "",
+        ).strip()
+
+        bitis_tarihi = request.GET.get(
+            "bitis",
+            "",
+        ).strip()
+
         form = KiralamaTalebiFormu(
             ilan=ilan,
+            initial={
+                "baslangic_tarihi": baslangic_tarihi,
+                "bitis_tarihi": bitis_tarihi,
+            },
         )
 
     return render(
@@ -79,7 +93,6 @@ def kiralama_talebi_olustur(request, ilan_id):
             "ilan": ilan,
         },
     )
-
 
 @login_required
 def gelen_kiralama_talepleri(request):
