@@ -10,6 +10,11 @@ urlpatterns = [
         views.kiralama_talebi_olustur,
         name="kiralama_talebi_olustur",
     ),
+    path(
+    "benim-taleplerim/",
+    views.benim_kiralama_taleplerim,
+    name="benim_kiralama_taleplerim",
+    ),
 
     path(
         "gelen-talepler/",
@@ -28,4 +33,5 @@ urlpatterns = [
         views.kiralama_talebi_reddet,
         name="kiralama_talebi_reddet",
     ),
+    
 ]

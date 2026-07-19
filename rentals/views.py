@@ -153,3 +153,23 @@ def kiralama_talebi_reddet(request, talep_id):
     return redirect(
         "rentals:gelen_kiralama_talepleri",
     )
+@login_required
+def benim_kiralama_taleplerim(request):
+    talepler = (
+        KiralamaTalebi.objects.filter(
+            kiraci=request.user,
+        )
+        .select_related(
+            "ilan",
+            "ilan__ilan_sahibi",
+        )
+        .order_by("-olusturulma_tarihi")
+    )
+
+    return render(
+        request,
+        "rentals/benim_kiralama_taleplerim.html",
+        {
+            "talepler": talepler,
+        },
+    )

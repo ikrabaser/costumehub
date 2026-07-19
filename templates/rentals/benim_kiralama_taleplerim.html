@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Benim Kiralama Taleplerim | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="mb-4">
+            <span class="badge text-bg-warning mb-2">
+                Kiralama Takibi
+            </span>
+
+            <h1 class="fw-bold mb-1">
+                Benim Kiralama Taleplerim
+            </h1>
+
+            <p class="text-secondary mb-0">
+                Gönderdiğin kiralama taleplerini ve güncel durumlarını incele.
+            </p>
+        </div>
+
+        {% if talepler %}
+
+            <div class="row g-4">
+
+                {% for talep in talepler %}
+
+                    <div class="col-lg-6">
+
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+
+                                    <a
+                                        href="{% url 'products:ilan_detay' talep.ilan.id %}"
+                                        class="text-decoration-none"
+                                    >
+                                        <span class="badge text-bg-warning">
+                                            {{ talep.ilan.baslik }}
+                                        </span>
+                                    </a>
+
+                                    {% if talep.durum == "BEKLIYOR" %}
+                                        <span class="badge text-bg-secondary">
+                                            Bekliyor
+                                        </span>
+                                    {% elif talep.durum == "KABUL_EDILDI" %}
+                                        <span class="badge text-bg-success">
+                                            Kabul Edildi
+                                        </span>
+                                    {% elif talep.durum == "REDDEDILDI" %}
+                                        <span class="badge text-bg-danger">
+                                            Reddedildi
+                                        </span>
+                                    {% else %}
+                                        <span class="badge text-bg-light">
+                                            {{ talep.get_durum_display }}
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="small text-secondary">
+                                        İlan sahibi
+                                    </div>
+
+                                    <div class="fw-semibold">
+                                        {{ talep.ilan.ilan_sahibi.username }}
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mb-3">
+
+                                    <div class="col-sm-6">
+                                        <div class="small text-secondary">
+                                            Başlangıç tarihi
+                                        </div>
+
+                                        <div class="fw-semibold">
+                                            {{ talep.baslangic_tarihi }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="small text-secondary">
+                                            Bitiş tarihi
+                                        </div>
+
+                                        <div class="fw-semibold">
+                                            {{ talep.bitis_tarihi }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="small text-secondary">
+                                            Toplam gün
+                                        </div>
+
+                                        <div class="fw-semibold">
+                                            {{ talep.toplam_gun }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="small text-secondary">
+                                            Toplam tutar
+                                        </div>
+
+                                        <div class="fw-bold">
+                                            {{ talep.toplam_tutar }} ₺
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {% if talep.not_metni %}
+                                    <div class="alert alert-light border mb-0">
+                                        <strong>Gönderdiğin not:</strong>
+                                        {{ talep.not_metni }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+
+                    <div class="display-5 mb-3">
+                        🎭
+                    </div>
+
+                    <h2 class="h4 fw-bold">
+                        Henüz kiralama talebin yok
+                    </h2>
+
+                    <p class="text-secondary mb-4">
+                        Beğendiğin bir kostüm için kiralama talebi oluşturabilirsin.
+                    </p>
+
+                    <a
+                        href="{% url 'products:ilan_listesi' %}"
+                        class="btn btn-dark"
+                    >
+                        Kostümleri İncele
+                    </a>
+
+                </div>
+            </div>
+
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
