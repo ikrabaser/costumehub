@@ -44,14 +44,37 @@
                                         <span class="badge text-bg-secondary">
                                             Bekliyor
                                         </span>
+
                                     {% elif talep.durum == "KABUL_EDILDI" %}
                                         <span class="badge text-bg-success">
                                             Kabul Edildi
                                         </span>
+
+                                    {% elif talep.durum == "TESLIM_EDILDI" %}
+                                        <span class="badge text-bg-primary">
+                                            Teslim Edildi
+                                        </span>
+
+                                    {% elif talep.durum == "IADE_EDILDI" %}
+                                        <span class="badge text-bg-warning">
+                                            İade Edildi
+                                        </span>
+
+                                    {% elif talep.durum == "TAMAMLANDI" %}
+                                        <span class="badge text-bg-dark">
+                                            Tamamlandı
+                                        </span>
+
                                     {% elif talep.durum == "REDDEDILDI" %}
                                         <span class="badge text-bg-danger">
                                             Reddedildi
                                         </span>
+
+                                    {% elif talep.durum == "IPTAL_EDILDI" %}
+                                        <span class="badge text-bg-dark">
+                                            İptal Edildi
+                                        </span>
+
                                     {% else %}
                                         <span class="badge text-bg-light">
                                             {{ talep.get_durum_display }}
@@ -154,6 +177,57 @@
                                         </form>
 
                                     </div>
+
+                                {% elif talep.durum == "KABUL_EDILDI" %}
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'rentals:kiralama_talebi_teslim_et' talep.id %}"
+                                        class="mt-4"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                        >
+                                            Teslim Edildi
+                                        </button>
+                                    </form>
+
+                                {% elif talep.durum == "TESLIM_EDILDI" %}
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'rentals:kiralama_talebi_iade_al' talep.id %}"
+                                        class="mt-4"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-warning"
+                                        >
+                                            İade Alındı
+                                        </button>
+                                    </form>
+
+                                {% elif talep.durum == "IADE_EDILDI" %}
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'rentals:kiralama_talebi_tamamla' talep.id %}"
+                                        class="mt-4"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-dark"
+                                        >
+                                            Tamamla
+                                        </button>
+                                    </form>
 
                                 {% endif %}
 

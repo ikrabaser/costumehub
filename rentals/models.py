@@ -9,9 +9,12 @@ class KiralamaTalebi(models.Model):
     DURUM_SECENEKLERI = [
         ("BEKLIYOR", "Bekliyor"),
         ("KABUL_EDILDI", "Kabul Edildi"),
+        ("TESLIM_EDILDI", "Teslim Edildi"),
+        ("IADE_EDILDI", "İade Edildi"),
+        ("TAMAMLANDI", "Tamamlandı"),
         ("REDDEDILDI", "Reddedildi"),
         ("IPTAL_EDILDI", "İptal Edildi"),
-        ("TAMAMLANDI", "Tamamlandı"),
+      
     ]
 
     ilan = models.ForeignKey(

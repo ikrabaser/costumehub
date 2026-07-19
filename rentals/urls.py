@@ -10,10 +10,11 @@ urlpatterns = [
         views.kiralama_talebi_olustur,
         name="kiralama_talebi_olustur",
     ),
+
     path(
-    "benim-taleplerim/",
-    views.benim_kiralama_taleplerim,
-    name="benim_kiralama_taleplerim",
+        "benim-taleplerim/",
+        views.benim_kiralama_taleplerim,
+        name="benim_kiralama_taleplerim",
     ),
 
     path(
@@ -33,5 +34,22 @@ urlpatterns = [
         views.kiralama_talebi_reddet,
         name="kiralama_talebi_reddet",
     ),
-    
+
+    path(
+        "talep/<int:talep_id>/teslim-et/",
+        views.kiralama_talebi_teslim_et,
+        name="kiralama_talebi_teslim_et",
+    ),
+
+    path(
+        "talep/<int:talep_id>/iade-al/",
+        views.kiralama_talebi_iade_al,
+        name="kiralama_talebi_iade_al",
+    ),
+
+    path(
+        "talep/<int:talep_id>/tamamla/",
+        views.kiralama_talebi_tamamla,
+        name="kiralama_talebi_tamamla",
+    ),
 ]

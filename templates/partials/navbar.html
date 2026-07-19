@@ -32,15 +32,18 @@
 
                 <li class="nav-item">
                     <a
-    class="nav-link"
-    href="{% url 'products:ilan_listesi' %}"
->
-    Kostümler
-</a>
+                        class="nav-link"
+                        href="{% url 'products:ilan_listesi' %}"
+                    >
+                        Kostümler
+                    </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a
+                        class="nav-link"
+                        href="{% url 'products:home' %}#nasil-calisir"
+                    >
                         Nasıl Çalışır?
                     </a>
                 </li>
@@ -54,31 +57,34 @@
                     <span class="navbar-text text-light me-2">
                         Hoş geldin, {{ user.username }}
                     </span>
-                    <a
-    href="{% url 'accounts:profil' %}"
-    class="btn btn-outline-light btn-sm"
->
-    Profilim
-</a>
-<a
-    href="{% url 'rentals:benim_kiralama_taleplerim' %}"
-    class="btn btn-outline-light btn-sm"
->
-    Benim Taleplerim
-</a>
-<a
-    href="{% url 'rentals:gelen_kiralama_talepleri' %}"
-    class="btn btn-outline-light btn-sm"
->
-    Gelen Talepler
-</a>
 
                     <a
-    href="{% url 'products:ilan_olustur' %}"
-    class="btn btn-outline-light btn-sm"
->
-    İlan Ver
-</a>
+                        href="{% url 'accounts:profil' %}"
+                        class="btn btn-outline-light btn-sm"
+                    >
+                        Profilim
+                    </a>
+
+                    <a
+                        href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+                        class="btn btn-outline-light btn-sm"
+                    >
+                        Benim Taleplerim
+                    </a>
+
+                    <a
+                        href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                        class="btn btn-outline-light btn-sm"
+                    >
+                        Gelen Talepler
+                    </a>
+
+                    <a
+                        href="{% url 'products:ilan_olustur' %}"
+                        class="btn btn-outline-light btn-sm"
+                    >
+                        İlan Ver
+                    </a>
 
                     <form
                         method="POST"
@@ -118,4 +124,4 @@
         </div>
 
     </div>
-</nav> 
+</nav>
