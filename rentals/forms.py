@@ -8,12 +8,8 @@ class KiralamaTalebiFormu(forms.ModelForm):
 
     def __init__(self, *args, ilan=None, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.ilan = ilan
-
-        bugun = timezone.localdate().isoformat()
-
-        self.fields["baslangic_tarihi"].widget.attrs["min"] = bugun
-        self.fields["bitis_tarihi"].widget.attrs["min"] = bugun
 
     class Meta:
         model = KiralamaTalebi
@@ -24,19 +20,13 @@ class KiralamaTalebiFormu(forms.ModelForm):
             "not_metni",
         ]
 
+        labels = {
+            "not_metni": "İlan sahibine notunuz",
+        }
+
         widgets = {
-            "baslangic_tarihi": forms.DateInput(
-                attrs={
-                    "class": "form-control",
-                    "type": "date",
-                }
-            ),
-            "bitis_tarihi": forms.DateInput(
-                attrs={
-                    "class": "form-control",
-                    "type": "date",
-                }
-            ),
+            "baslangic_tarihi": forms.HiddenInput(),
+            "bitis_tarihi": forms.HiddenInput(),
             "not_metni": forms.Textarea(
                 attrs={
                     "class": "form-control",
@@ -52,11 +42,19 @@ class KiralamaTalebiFormu(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        baslangic_tarihi = cleaned_data.get("baslangic_tarihi")
-        bitis_tarihi = cleaned_data.get("bitis_tarihi")
+        baslangic_tarihi = cleaned_data.get(
+            "baslangic_tarihi"
+        )
+
+        bitis_tarihi = cleaned_data.get(
+            "bitis_tarihi"
+        )
 
         if not baslangic_tarihi or not bitis_tarihi:
-            return cleaned_data
+            raise forms.ValidationError(
+                "Kiralama tarihleri bulunamadı. "
+                "Lütfen ilan sayfasından yeniden tarih seçin."
+            )
 
         bugun = timezone.localdate()
 
@@ -92,7 +90,8 @@ class KiralamaTalebiFormu(forms.ModelForm):
 
             if cakisan_talep_var_mi:
                 raise forms.ValidationError(
-                    "Bu ilan seçtiğiniz tarihlerde daha önce kiralanmış."
+                    "Bu ilan seçtiğiniz tarihlerde "
+                    "daha önce kiralanmış."
                 )
 
         return cleaned_data

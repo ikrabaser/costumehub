@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.dateparse import parse_date
 from django.views.decorators.http import require_POST
 
 from products.models import Ilan
@@ -31,9 +32,105 @@ def kiralama_talebi_olustur(request, ilan_id):
             ilan_id=ilan.id,
         )
 
-    if request.method == "POST":
+    oturum_anahtari = (
+        f"kiralama_tarihleri_{ilan.id}"
+    )
+
+    if request.method == "GET":
+        baslangic_tarihi_metni = request.GET.get(
+            "baslangic",
+            "",
+        ).strip()
+
+        bitis_tarihi_metni = request.GET.get(
+            "bitis",
+            "",
+        ).strip()
+
+        baslangic_tarihi = parse_date(
+            baslangic_tarihi_metni
+        )
+
+        bitis_tarihi = parse_date(
+            bitis_tarihi_metni
+        )
+
+        if not baslangic_tarihi or not bitis_tarihi:
+            messages.error(
+                request,
+                (
+                    "Lütfen kiralama tarihlerini "
+                    "ilan takviminden seçin."
+                ),
+            )
+
+            return redirect(
+                "products:ilan_detay",
+                ilan_id=ilan.id,
+            )
+
+        request.session[oturum_anahtari] = {
+            "baslangic": baslangic_tarihi.isoformat(),
+            "bitis": bitis_tarihi.isoformat(),
+        }
+
         form = KiralamaTalebiFormu(
-            request.POST,
+            ilan=ilan,
+            initial={
+                "baslangic_tarihi": baslangic_tarihi,
+                "bitis_tarihi": bitis_tarihi,
+            },
+        )
+
+    else:
+        oturum_tarihleri = request.session.get(
+            oturum_anahtari
+        )
+
+        if not oturum_tarihleri:
+            messages.error(
+                request,
+                (
+                    "Kiralama tarihi seçiminizin süresi dolmuş. "
+                    "Lütfen tarihleri yeniden seçin."
+                ),
+            )
+
+            return redirect(
+                "products:ilan_detay",
+                ilan_id=ilan.id,
+            )
+
+        baslangic_tarihi = parse_date(
+            oturum_tarihleri.get(
+                "baslangic",
+                "",
+            )
+        )
+
+        bitis_tarihi = parse_date(
+            oturum_tarihleri.get(
+                "bitis",
+                "",
+            )
+        )
+
+        form_verileri = request.POST.copy()
+
+        form_verileri["baslangic_tarihi"] = (
+            baslangic_tarihi.isoformat()
+            if baslangic_tarihi
+            else ""
+        )
+
+        form_verileri["bitis_tarihi"] = (
+            bitis_tarihi.isoformat()
+            if bitis_tarihi
+            else ""
+        )
+
+        form = KiralamaTalebiFormu(
+            form_verileri,
             ilan=ilan,
         )
 
@@ -48,6 +145,7 @@ def kiralama_talebi_olustur(request, ilan_id):
             talep.ilan = ilan
             talep.kiraci = request.user
             talep.toplam_gun = toplam_gun
+
             talep.toplam_tutar = (
                 Decimal(toplam_gun)
                 * ilan.gunluk_fiyat
@@ -55,6 +153,11 @@ def kiralama_talebi_olustur(request, ilan_id):
 
             talep.full_clean()
             talep.save()
+
+            request.session.pop(
+                oturum_anahtari,
+                None,
+            )
 
             messages.success(
                 request,
@@ -66,24 +169,14 @@ def kiralama_talebi_olustur(request, ilan_id):
                 ilan_id=ilan.id,
             )
 
-    else:
-        baslangic_tarihi = request.GET.get(
-            "baslangic",
-            "",
-        ).strip()
+    toplam_gun = (
+        bitis_tarihi - baslangic_tarihi
+    ).days + 1
 
-        bitis_tarihi = request.GET.get(
-            "bitis",
-            "",
-        ).strip()
-
-        form = KiralamaTalebiFormu(
-            ilan=ilan,
-            initial={
-                "baslangic_tarihi": baslangic_tarihi,
-                "bitis_tarihi": bitis_tarihi,
-            },
-        )
+    toplam_tutar = (
+        Decimal(toplam_gun)
+        * ilan.gunluk_fiyat
+    )
 
     return render(
         request,
@@ -91,8 +184,13 @@ def kiralama_talebi_olustur(request, ilan_id):
         {
             "form": form,
             "ilan": ilan,
+            "baslangic_tarihi": baslangic_tarihi,
+            "bitis_tarihi": bitis_tarihi,
+            "toplam_gun": toplam_gun,
+            "toplam_tutar": toplam_tutar,
         },
     )
+
 
 @login_required
 def gelen_kiralama_talepleri(request):
