@@ -20,26 +20,29 @@
 
         <div class="row g-4">
 
+            <!-- İlan bilgileri -->
             <div class="col-lg-8">
 
                 <div class="card border-0 shadow-sm">
+
                     {% if ilan.fotograf %}
-    <img
-        src="{{ ilan.fotograf.url }}"
-        class="card-img-top"
-        alt="{{ ilan.baslik }}"
-        style="max-height: 520px; object-fit: cover;"
-    >
-{% else %}
-    <div
-        class="d-flex align-items-center justify-content-center bg-light"
-        style="height: 380px;"
-    >
-        <span class="display-1">
-            🎭
-        </span>
-    </div>
-{% endif %}
+                        <img
+                            src="{{ ilan.fotograf.url }}"
+                            class="card-img-top"
+                            alt="{{ ilan.baslik }}"
+                            style="max-height: 520px; object-fit: cover;"
+                        >
+                    {% else %}
+                        <div
+                            class="d-flex align-items-center justify-content-center bg-light"
+                            style="height: 380px;"
+                        >
+                            <span class="display-1">
+                                🎭
+                            </span>
+                        </div>
+                    {% endif %}
+
                     <div class="card-body p-4 p-md-5">
 
                         <div class="d-flex flex-wrap gap-2 mb-3">
@@ -129,8 +132,10 @@
 
             </div>
 
+            <!-- Sağ bölüm -->
             <div class="col-lg-4">
 
+                <!-- İlan sahibi kartı -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-4">
 
@@ -173,7 +178,8 @@
                     </div>
                 </div>
 
-                <div class="card border-0 shadow-sm">
+                <!-- Fiyat ve kiralama kartı -->
+                <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-4">
 
                         <div class="small text-secondary">
@@ -185,40 +191,43 @@
                         </div>
 
                         {% if ilan.mevcut_mu %}
-                        {% if user.is_authenticated %}
 
-                        {% if user == ilan.ilan_sahibi %}
-                    
-                            <button
-                                type="button"
-                                class="btn btn-secondary w-100"
-                                disabled
-                            >
-                                Bu İlan Size Ait
-                            </button>
-                    
+                            {% if user.is_authenticated %}
+
+                                {% if user == ilan.ilan_sahibi %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary w-100"
+                                        disabled
+                                    >
+                                        Bu İlan Size Ait
+                                    </button>
+
+                                {% else %}
+
+                                    <a
+                                        href="{% url 'rentals:kiralama_talebi_olustur' ilan.id %}"
+                                        class="btn btn-dark w-100"
+                                    >
+                                        Kiralama Talebi Oluştur
+                                    </a>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <a
+                                    href="{% url 'accounts:giris' %}"
+                                    class="btn btn-dark w-100"
+                                >
+                                    Talep Oluşturmak İçin Giriş Yap
+                                </a>
+
+                            {% endif %}
+
                         {% else %}
-                    
-                            <a
-                                href="{% url 'rentals:kiralama_talebi_olustur' ilan.id %}"
-                                class="btn btn-dark w-100"
-                            >
-                                Kiralama Talebi Oluştur
-                            </a>
-                    
-                        {% endif %}
-                    
-                    {% else %}
-                    
-                        <a
-                            href="{% url 'accounts:giris' %}"
-                            class="btn btn-dark w-100"
-                        >
-                            Talep Oluşturmak İçin Giriş Yap
-                        </a>
-                    
-                    {% endif %}
-                        {% else %}
+
                             <button
                                 type="button"
                                 class="btn btn-secondary w-100"
@@ -226,6 +235,58 @@
                             >
                                 Şu Anda Kiralanamaz
                             </button>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <!-- Dolu tarihler kartı -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h2 class="h5 fw-bold mb-3">
+                            📅 Dolu Tarihler
+                        </h2>
+
+                        {% if dolu_tarih_araliklari %}
+
+                            <div class="list-group list-group-flush">
+
+                                {% for tarih in dolu_tarih_araliklari %}
+
+                                    <div class="list-group-item px-0">
+
+                                        <div class="small text-secondary mb-1">
+                                            Kiralanmış tarih aralığı
+                                        </div>
+
+                                        <div class="fw-semibold">
+                                            {{ tarih.baslangic_tarihi|date:"d F Y" }}
+                                            -
+                                            {{ tarih.bitis_tarihi|date:"d F Y" }}
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                            <div class="small text-secondary mt-3">
+                                Bu tarihler için yeni kiralama talebi
+                                oluşturulamaz.
+                            </div>
+
+                        {% else %}
+
+                            <div class="alert alert-success mb-0">
+                                Bu ilan için şu anda
+                                <strong>
+                                    rezerve edilmiş tarih bulunmuyor.
+                                </strong>
+                            </div>
+
                         {% endif %}
 
                     </div>

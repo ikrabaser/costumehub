@@ -1,9 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+
+from rentals.models import KiralamaTalebi
+
 from .forms import IlanFormu
-from .models import Ilan,Kategori
+from .models import Ilan, Kategori
 
 
 def home(request):
@@ -13,11 +17,10 @@ def home(request):
 @login_required
 def ilan_olustur(request):
     if request.method == "POST":
-        form = IlanFormu(request.POST)
         form = IlanFormu(
-    request.POST,
-    request.FILES
-)
+            request.POST,
+            request.FILES,
+        )
 
         if form.is_valid():
             ilan = form.save(commit=False)
@@ -30,6 +33,7 @@ def ilan_olustur(request):
             )
 
             return redirect("products:home")
+
     else:
         form = IlanFormu(
             initial={
@@ -44,20 +48,29 @@ def ilan_olustur(request):
             "form": form,
         },
     )
+
+
 def ilan_listesi(request):
-    ilanlar = Ilan.objects.filter(
-        durum="YAYINDA",
-        mevcut_mu=True
-    ).select_related(
-        "kategori",
-        "ilan_sahibi"
-    ).order_by("-olusturulma_tarihi")
+    ilanlar = (
+        Ilan.objects.filter(
+            durum="YAYINDA",
+            mevcut_mu=True,
+        )
+        .select_related(
+            "kategori",
+            "ilan_sahibi",
+        )
+        .order_by("-olusturulma_tarihi")
+    )
 
     arama = request.GET.get("arama", "").strip()
     kategori = request.GET.get("kategori", "").strip()
     beden = request.GET.get("beden", "").strip()
     sehir = request.GET.get("sehir", "").strip()
-    maksimum_fiyat = request.GET.get("maksimum_fiyat", "").strip()
+    maksimum_fiyat = request.GET.get(
+        "maksimum_fiyat",
+        "",
+    ).strip()
 
     if arama:
         ilanlar = ilanlar.filter(
@@ -67,27 +80,36 @@ def ilan_listesi(request):
         )
 
     if kategori:
-        ilanlar = ilanlar.filter(kategori_id=kategori)
+        ilanlar = ilanlar.filter(
+            kategori_id=kategori,
+        )
 
     if beden:
-        ilanlar = ilanlar.filter(beden=beden)
+        ilanlar = ilanlar.filter(
+            beden=beden,
+        )
 
     if sehir:
-        ilanlar = ilanlar.filter(sehir__icontains=sehir)
+        ilanlar = ilanlar.filter(
+            sehir__icontains=sehir,
+        )
 
     if maksimum_fiyat:
         try:
-            maksimum_fiyat_degeri = float(maksimum_fiyat)
+            maksimum_fiyat_degeri = float(
+                maksimum_fiyat
+            )
 
             if maksimum_fiyat_degeri >= 0:
                 ilanlar = ilanlar.filter(
-                    gunluk_fiyat__lte=maksimum_fiyat_degeri
+                    gunluk_fiyat__lte=maksimum_fiyat_degeri,
                 )
+
         except ValueError:
             pass
 
     kategoriler = Kategori.objects.filter(
-        aktif_mi=True
+        aktif_mi=True,
     ).order_by("ad")
 
     context = {
@@ -104,25 +126,48 @@ def ilan_listesi(request):
     return render(
         request,
         "products/ilan_listesi.html",
-        context
+        context,
     )
+
+
 def ilan_detay(request, ilan_id):
     ilan = get_object_or_404(
         Ilan.objects.select_related(
             "kategori",
             "ilan_sahibi",
-            "ilan_sahibi__profil"
+            "ilan_sahibi__profil",
         ),
         id=ilan_id,
-        durum="YAYINDA"
+        durum="YAYINDA",
+    )
+
+    bugun = timezone.localdate()
+
+    dolu_tarih_araliklari = (
+        KiralamaTalebi.objects.filter(
+            ilan=ilan,
+            durum__in=[
+                "KABUL_EDILDI",
+                "TESLIM_EDILDI",
+                "IADE_EDILDI",
+                "TAMAMLANDI",
+            ],
+            bitis_tarihi__gte=bugun,
+        )
+        .order_by("baslangic_tarihi")
+        .values(
+            "baslangic_tarihi",
+            "bitis_tarihi",
+        )
     )
 
     context = {
-        "ilan": ilan
+        "ilan": ilan,
+        "dolu_tarih_araliklari": dolu_tarih_araliklari,
     }
 
     return render(
         request,
         "products/ilan_detay.html",
-        context
+        context,
     )
