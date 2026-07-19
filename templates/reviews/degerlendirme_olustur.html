@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Değerlendirme Yap | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-xl-6">
+
+                <div class="mb-4">
+                    <span class="badge text-bg-warning mb-2">
+                        Kiralama Değerlendirmesi
+                    </span>
+
+                    <h1 class="fw-bold mb-2">
+                        Deneyimini Değerlendir
+                    </h1>
+
+                    <p class="text-secondary mb-0">
+                        Kiralama süreciyle ilgili puanını ve yorumunu paylaş.
+                    </p>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="border rounded-3 p-3 bg-light mb-4">
+
+                            <div class="small text-secondary">
+                                Değerlendirilen ilan
+                            </div>
+
+                            <div class="fw-bold fs-5">
+                                {{ ilan.baslik }}
+                            </div>
+
+                            <hr>
+
+                            <div class="row g-3">
+
+                                <div class="col-sm-6">
+                                    <div class="small text-secondary">
+                                        İlan sahibi
+                                    </div>
+
+                                    <div class="fw-semibold">
+                                        {{ ilan.ilan_sahibi.username }}
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="small text-secondary">
+                                        Kiralama durumu
+                                    </div>
+
+                                    <div>
+                                        <span class="badge text-bg-dark">
+                                            {{ kiralama_talebi.get_durum_display }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="small text-secondary">
+                                        Başlangıç tarihi
+                                    </div>
+
+                                    <div class="fw-semibold">
+                                        {{ kiralama_talebi.baslangic_tarihi|date:"d F Y" }}
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="small text-secondary">
+                                        Bitiş tarihi
+                                    </div>
+
+                                    <div class="fw-semibold">
+                                        {{ kiralama_talebi.bitis_tarihi|date:"d F Y" }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <form method="post">
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
+
+                            <div class="mb-4">
+
+                                <label class="form-label fw-bold">
+                                    Puanın
+                                </label>
+
+                                <p class="small text-secondary mb-3">
+                                    Kiralama deneyimine 1 ile 5 arasında puan ver.
+                                </p>
+
+                                <div class="d-flex flex-wrap gap-3">
+
+                                    {% for secenek in form.puan %}
+                                        <div class="border rounded-3 px-3 py-2 bg-light">
+                                            {{ secenek.tag }}
+
+                                            <label
+                                                for="{{ secenek.id_for_label }}"
+                                                class="ms-1 fw-semibold"
+                                            >
+                                                {{ secenek.choice_label }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+
+                                {% if form.puan.errors %}
+                                    <div class="text-danger small mt-2">
+                                        {{ form.puan.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="mb-4">
+
+                                <label
+                                    for="{{ form.yorum.id_for_label }}"
+                                    class="form-label fw-bold"
+                                >
+                                    Yorumun
+                                </label>
+
+                                {{ form.yorum }}
+
+                                {% if form.yorum.errors %}
+                                    <div class="text-danger small mt-2">
+                                        {{ form.yorum.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="d-grid gap-2">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-warning fw-semibold"
+                                >
+                                    ⭐ Değerlendirmeyi Kaydet
+                                </button>
+
+                                <a
+                                    href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+                                    class="btn btn-outline-secondary"
+                                >
+                                    Vazgeç
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

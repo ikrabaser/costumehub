@@ -397,6 +397,7 @@ def benim_kiralama_taleplerim(request):
         .select_related(
             "ilan",
             "ilan__ilan_sahibi",
+            "degerlendirme",
         )
         .order_by("-olusturulma_tarihi")
     )

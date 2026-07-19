@@ -34,7 +34,10 @@
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-body p-4">
 
-                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div
+                                    class="d-flex justify-content-between
+                                           align-items-start gap-3 mb-3"
+                                >
 
                                     <a
                                         href="{% url 'products:ilan_detay' talep.ilan.id %}"
@@ -46,21 +49,53 @@
                                     </a>
 
                                     {% if talep.durum == "BEKLIYOR" %}
+
                                         <span class="badge text-bg-secondary">
                                             Bekliyor
                                         </span>
+
                                     {% elif talep.durum == "KABUL_EDILDI" %}
+
                                         <span class="badge text-bg-success">
                                             Kabul Edildi
                                         </span>
+
+                                    {% elif talep.durum == "TESLIM_EDILDI" %}
+
+                                        <span class="badge text-bg-primary">
+                                            Teslim Edildi
+                                        </span>
+
+                                    {% elif talep.durum == "IADE_EDILDI" %}
+
+                                        <span class="badge text-bg-info">
+                                            İade Edildi
+                                        </span>
+
+                                    {% elif talep.durum == "TAMAMLANDI" %}
+
+                                        <span class="badge text-bg-dark">
+                                            Tamamlandı
+                                        </span>
+
                                     {% elif talep.durum == "REDDEDILDI" %}
+
                                         <span class="badge text-bg-danger">
                                             Reddedildi
                                         </span>
+
+                                    {% elif talep.durum == "IPTAL_EDILDI" %}
+
+                                        <span class="badge text-bg-danger">
+                                            İptal Edildi
+                                        </span>
+
                                     {% else %}
-                                        <span class="badge text-bg-light">
+
+                                        <span class="badge text-bg-light border">
                                             {{ talep.get_durum_display }}
                                         </span>
+
                                     {% endif %}
 
                                 </div>
@@ -83,7 +118,7 @@
                                         </div>
 
                                         <div class="fw-semibold">
-                                            {{ talep.baslangic_tarihi }}
+                                            {{ talep.baslangic_tarihi|date:"d F Y" }}
                                         </div>
                                     </div>
 
@@ -93,7 +128,7 @@
                                         </div>
 
                                         <div class="fw-semibold">
-                                            {{ talep.bitis_tarihi }}
+                                            {{ talep.bitis_tarihi|date:"d F Y" }}
                                         </div>
                                     </div>
 
@@ -103,7 +138,7 @@
                                         </div>
 
                                         <div class="fw-semibold">
-                                            {{ talep.toplam_gun }}
+                                            {{ talep.toplam_gun }} gün
                                         </div>
                                     </div>
 
@@ -120,10 +155,83 @@
                                 </div>
 
                                 {% if talep.not_metni %}
-                                    <div class="alert alert-light border mb-0">
+
+                                    <div class="alert alert-light border mb-3">
                                         <strong>Gönderdiğin not:</strong>
-                                        {{ talep.not_metni }}
+
+                                        <div class="mt-1">
+                                            {{ talep.not_metni }}
+                                        </div>
                                     </div>
+
+                                {% endif %}
+
+                                {% if talep.durum == "TAMAMLANDI" %}
+
+                                    <hr class="my-4">
+
+                                    {% if talep.degerlendirme %}
+
+                                        <div class="border rounded-3 p-3 bg-light">
+
+                                            <div
+                                                class="d-flex justify-content-between
+                                                       align-items-center gap-3 mb-2"
+                                            >
+                                                <div class="fw-bold">
+                                                    Değerlendirmen
+                                                </div>
+
+                                                <span class="badge text-bg-warning">
+                                                    {{ talep.degerlendirme.puan }}/5
+                                                </span>
+                                            </div>
+
+                                            <div
+                                                class="text-warning fs-5 mb-2"
+                                                aria-label="{{ talep.degerlendirme.puan }} yıldız"
+                                            >
+                                                {% for sayi in "12345" %}
+                                                    {% if forloop.counter <= talep.degerlendirme.puan %}
+                                                        ★
+                                                    {% else %}
+                                                        ☆
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+
+                                            <p class="mb-2">
+                                                {{ talep.degerlendirme.yorum }}
+                                            </p>
+
+                                            <div class="small text-secondary">
+                                                {{ talep.degerlendirme.olusturulma_tarihi|date:"d F Y H:i" }}
+                                            </div>
+
+                                        </div>
+
+                                    {% else %}
+
+                                        <div class="alert alert-success mb-3">
+                                            <div class="fw-semibold mb-1">
+                                                Kiralama tamamlandı
+                                            </div>
+
+                                            <div class="small">
+                                                Kiralama deneyimini paylaşarak
+                                                diğer kullanıcılara yardımcı olabilirsin.
+                                            </div>
+                                        </div>
+
+                                        <a
+                                            href="{% url 'reviews:degerlendirme_olustur' talep.id %}"
+                                            class="btn btn-warning w-100 fw-semibold"
+                                        >
+                                            ⭐ Değerlendirme Yap
+                                        </a>
+
+                                    {% endif %}
+
                                 {% endif %}
 
                             </div>
@@ -149,7 +257,8 @@
                     </h2>
 
                     <p class="text-secondary mb-4">
-                        Beğendiğin bir kostüm için kiralama talebi oluşturabilirsin.
+                        Beğendiğin bir kostüm için kiralama talebi
+                        oluşturabilirsin.
                     </p>
 
                     <a

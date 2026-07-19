@@ -1,11 +1,12 @@
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from rentals.models import KiralamaTalebi
+from reviews.models import Degerlendirme
 
 from .forms import IlanFormu
 from .models import Ilan, Kategori
@@ -165,17 +166,51 @@ def ilan_detay(request, ilan_id):
     dolu_tarihler_json = json.dumps(
         [
             {
-                "baslangic": tarih["baslangic_tarihi"].isoformat(),
-                "bitis": tarih["bitis_tarihi"].isoformat(),
+                "baslangic": tarih[
+                    "baslangic_tarihi"
+                ].isoformat(),
+                "bitis": tarih[
+                    "bitis_tarihi"
+                ].isoformat(),
             }
             for tarih in dolu_tarih_araliklari
         ]
+    )
+
+    degerlendirmeler = (
+        Degerlendirme.objects.filter(
+            kiralama_talebi__ilan=ilan,
+        )
+        .select_related(
+            "degerlendiren",
+            "kiralama_talebi",
+        )
+        .order_by("-olusturulma_tarihi")
+    )
+
+    degerlendirme_istatistikleri = (
+        degerlendirmeler.aggregate(
+            ortalama_puan=Avg("puan"),
+        )
+    )
+
+    ortalama_puan = (
+        degerlendirme_istatistikleri[
+            "ortalama_puan"
+        ]
+    )
+
+    degerlendirme_sayisi = (
+        degerlendirmeler.count()
     )
 
     context = {
         "ilan": ilan,
         "dolu_tarih_araliklari": dolu_tarih_araliklari,
         "dolu_tarihler_json": dolu_tarihler_json,
+        "degerlendirmeler": degerlendirmeler,
+        "ortalama_puan": ortalama_puan,
+        "degerlendirme_sayisi": degerlendirme_sayisi,
     }
 
     return render(
