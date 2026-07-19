@@ -372,15 +372,26 @@
                                         Bu İlan Size Ait
                                     </button>
 
-                                {% else %}
+                                    {% else %}
 
-                                    <a
-                                        href="#uygunluk-takvimi"
-                                        class="btn btn-dark w-100"
-                                    >
-                                        Takvimden Tarih Seç
-                                    </a>
-
+                                    <div class="d-grid gap-2">
+                                
+                                        <a
+                                            href="#uygunluk-takvimi"
+                                            class="btn btn-dark"
+                                        >
+                                            Takvimden Tarih Seç
+                                        </a>
+                                
+                                        <a
+                                            href="{% url 'conversations:sohbet_baslat' ilan.id %}"
+                                            class="btn btn-outline-dark"
+                                        >
+                                            💬 İlan Sahibine Mesaj Gönder
+                                        </a>
+                                
+                                    </div>
+                                
                                 {% endif %}
 
                             {% else %}

@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ sohbet.ilan.baslik }} Sohbeti | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light min-vh-100">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+
+                <div class="mb-3">
+                    <a
+                        href="{% url 'conversations:sohbet_listesi' %}"
+                        class="text-decoration-none text-dark"
+                    >
+                        ← Mesajlara Dön
+                    </a>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-header bg-white border-bottom p-4">
+
+                        <div
+                            class="d-flex justify-content-between
+                                   align-items-center gap-3"
+                        >
+
+                            <div>
+                                <span
+                                    class="badge text-bg-warning mb-2"
+                                >
+                                    {{ sohbet.ilan.baslik }}
+                                </span>
+
+                                {% if request.user == sohbet.kiraci %}
+                                    <h1 class="h5 fw-bold mb-1">
+                                        {{ sohbet.ilan_sahibi.username }}
+                                    </h1>
+
+                                    <div class="small text-secondary">
+                                        İlan sahibi
+                                    </div>
+                                {% else %}
+                                    <h1 class="h5 fw-bold mb-1">
+                                        {{ sohbet.kiraci.username }}
+                                    </h1>
+
+                                    <div class="small text-secondary">
+                                        Kiracı
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <a
+                                href="{% url 'products:ilan_detay' sohbet.ilan.id %}"
+                                class="btn btn-outline-dark btn-sm"
+                            >
+                                İlana Git
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="card-body p-4"
+                        id="mesaj-alani"
+                        style="
+                            min-height: 430px;
+                            max-height: 560px;
+                            overflow-y: auto;
+                            background-color: #f8f9fa;
+                        "
+                    >
+
+                        {% if mesajlar %}
+
+                            {% for mesaj in mesajlar %}
+
+                                <div
+                                    class="d-flex mb-3
+                                           {% if mesaj.gonderen == request.user %}
+                                               justify-content-end
+                                           {% else %}
+                                               justify-content-start
+                                           {% endif %}"
+                                >
+
+                                    <div
+                                        class="px-3 py-2 rounded-3 shadow-sm
+                                               {% if mesaj.gonderen == request.user %}
+                                                   bg-dark text-white
+                                               {% else %}
+                                                   bg-white border
+                                               {% endif %}"
+                                        style="max-width: 75%;"
+                                    >
+
+                                        <div
+                                            class="small fw-semibold mb-1
+                                                   {% if mesaj.gonderen == request.user %}
+                                                       text-white
+                                                   {% else %}
+                                                       text-dark
+                                                   {% endif %}"
+                                        >
+                                            {{ mesaj.gonderen.username }}
+                                        </div>
+
+                                        <div
+                                            style="
+                                                white-space: pre-wrap;
+                                                overflow-wrap: anywhere;
+                                            "
+                                        >
+                                            {{ mesaj.icerik }}
+                                        </div>
+
+                                        <div
+                                            class="small mt-1 text-end
+                                                   {% if mesaj.gonderen == request.user %}
+                                                       text-white-50
+                                                   {% else %}
+                                                       text-secondary
+                                                   {% endif %}"
+                                        >
+                                            {{ mesaj.olusturulma_tarihi|date:"d M Y" }}
+                                            {{ mesaj.olusturulma_tarihi|time:"H:i" }}
+
+                                            {% if mesaj.gonderen == request.user %}
+                                                {% if mesaj.okundu_mu %}
+                                                    · Okundu
+                                                {% else %}
+                                                    · Gönderildi
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <div
+                                class="h-100 d-flex
+                                       align-items-center
+                                       justify-content-center
+                                       text-center"
+                            >
+                                <div>
+                                    <div class="display-5 mb-3">
+                                        👋
+                                    </div>
+
+                                    <h2 class="h6 fw-bold">
+                                        Sohbeti başlatın
+                                    </h2>
+
+                                    <p class="text-secondary mb-0">
+                                        İlan hakkında merak ettiğiniz
+                                        bir konuyu mesaj olarak yazabilirsiniz.
+                                    </p>
+                                </div>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="card-footer bg-white border-top p-4">
+
+                        <form method="POST" novalidate>
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for hata in form.non_field_errors %}
+                                        <div>
+                                            {{ hata }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                {{ form.icerik }}
+
+                                {% for hata in form.icerik.errors %}
+                                    <div
+                                        class="text-danger small mt-1"
+                                    >
+                                        {{ hata }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div
+                                class="d-flex justify-content-end"
+                            >
+                                <button
+                                    type="submit"
+                                    class="btn btn-dark"
+                                >
+                                    Mesaj Gönder
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const mesajAlani = document.getElementById("mesaj-alani");
+
+        if (mesajAlani) {
+            mesajAlani.scrollTop = mesajAlani.scrollHeight;
+        }
+    });
+</script>
+
+{% endblock %}

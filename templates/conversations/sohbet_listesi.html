@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Mesajlarım | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light min-vh-100">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                <div class="mb-4">
+                    <span class="badge text-bg-warning mb-2">
+                        Mesajlaşma
+                    </span>
+
+                    <h1 class="h2 fw-bold mb-2">
+                        Mesajlarım
+                    </h1>
+
+                    <p class="text-secondary mb-0">
+                        Kiracılar ve ilan sahipleriyle yaptığınız
+                        görüşmeleri buradan takip edebilirsiniz.
+                    </p>
+                </div>
+
+                {% if sohbetler %}
+
+                    <div class="row g-3">
+
+                        {% for sohbet in sohbetler %}
+
+                            <div class="col-12">
+                                <a
+                                    href="{% url 'conversations:sohbet_detay' sohbet.id %}"
+                                    class="text-decoration-none text-dark"
+                                >
+                                    <div
+                                        class="card border-0 shadow-sm
+                                               h-100"
+                                    >
+                                        <div class="card-body p-4">
+
+                                            <div
+                                                class="d-flex
+                                                       justify-content-between
+                                                       align-items-start
+                                                       gap-3"
+                                            >
+
+                                                <div class="flex-grow-1">
+
+                                                    <div
+                                                        class="d-flex
+                                                               flex-wrap
+                                                               align-items-center
+                                                               gap-2 mb-2"
+                                                    >
+                                                        <span
+                                                            class="badge
+                                                                   text-bg-warning"
+                                                        >
+                                                            {{ sohbet.ilan.baslik }}
+                                                        </span>
+
+                                                        {% if request.user == sohbet.kiraci %}
+                                                            <span
+                                                                class="badge
+                                                                       text-bg-light
+                                                                       border"
+                                                            >
+                                                                İlan sahibiyle görüşme
+                                                            </span>
+                                                        {% else %}
+                                                            <span
+                                                                class="badge
+                                                                       text-bg-light
+                                                                       border"
+                                                            >
+                                                                Kiracıyla görüşme
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    {% if request.user == sohbet.kiraci %}
+                                                        <div
+                                                            class="fw-semibold"
+                                                        >
+                                                            {{ sohbet.ilan_sahibi.username }}
+                                                        </div>
+                                                    {% else %}
+                                                        <div
+                                                            class="fw-semibold"
+                                                        >
+                                                            {{ sohbet.kiraci.username }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                    <div
+                                                        class="text-secondary
+                                                               small mt-2"
+                                                    >
+                                                        {% with son_mesaj=sohbet.mesajlar.last %}
+                                                            {% if son_mesaj %}
+                                                                <strong>
+                                                                    {{ son_mesaj.gonderen.username }}:
+                                                                </strong>
+
+                                                                {{ son_mesaj.icerik|truncatechars:90 }}
+                                                            {% else %}
+                                                                Henüz mesaj gönderilmedi.
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    </div>
+
+                                                </div>
+
+                                                <div
+                                                    class="text-end
+                                                           flex-shrink-0"
+                                                >
+                                                    <div
+                                                        class="small
+                                                               text-secondary"
+                                                    >
+                                                        {{ sohbet.guncellenme_tarihi|date:"d M Y" }}
+                                                    </div>
+
+                                                    <div
+                                                        class="small
+                                                               text-secondary mt-1"
+                                                    >
+                                                        {{ sohbet.guncellenme_tarihi|time:"H:i" }}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="card border-0 shadow-sm">
+                        <div
+                            class="card-body p-5 text-center"
+                        >
+                            <div class="display-5 mb-3">
+                                💬
+                            </div>
+
+                            <h2 class="h5 fw-bold">
+                                Henüz bir sohbetiniz yok
+                            </h2>
+
+                            <p class="text-secondary mb-4">
+                                Bir ilan sahibine mesaj gönderdiğinizde
+                                sohbetiniz burada görünecektir.
+                            </p>
+
+                            <a
+                                href="{% url 'products:ilan_listesi' %}"
+                                class="btn btn-dark"
+                            >
+                                İlanları İncele
+                            </a>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

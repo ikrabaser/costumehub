@@ -24,6 +24,10 @@ urlpatterns = [
     path("", include("products.urls")),
     path("hesap/", include("accounts.urls")),
     path("kiralamalar/", include("rentals.urls")),
+    path(
+    "mesajlar/",
+    include("conversations.urls"),
+),
 ]
 if settings.DEBUG:
     urlpatterns += static(
