@@ -1,3 +1,4 @@
+import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -143,7 +144,7 @@ def ilan_detay(request, ilan_id):
 
     bugun = timezone.localdate()
 
-    dolu_tarih_araliklari = (
+    dolu_tarih_araliklari = list(
         KiralamaTalebi.objects.filter(
             ilan=ilan,
             durum__in=[
@@ -161,9 +162,20 @@ def ilan_detay(request, ilan_id):
         )
     )
 
+    dolu_tarihler_json = json.dumps(
+        [
+            {
+                "baslangic": tarih["baslangic_tarihi"].isoformat(),
+                "bitis": tarih["bitis_tarihi"].isoformat(),
+            }
+            for tarih in dolu_tarih_araliklari
+        ]
+    )
+
     context = {
         "ilan": ilan,
         "dolu_tarih_araliklari": dolu_tarih_araliklari,
+        "dolu_tarihler_json": dolu_tarihler_json,
     }
 
     return render(

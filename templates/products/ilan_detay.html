@@ -6,6 +6,152 @@
 
 {% block content %}
 
+<style>
+    .takvim-kapsayici {
+        width: 100%;
+    }
+
+    .takvim-baslik {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .takvim-ay-yil {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .takvim-yon-butonu {
+        width: 38px;
+        height: 38px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-color: #ffffff;
+        font-size: 1.2rem;
+        line-height: 1;
+        transition: 0.2s;
+    }
+
+    .takvim-yon-butonu:hover {
+        background-color: #f1f3f5;
+    }
+
+    .takvim-hafta,
+    .takvim-gunler {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+    }
+
+    .takvim-hafta {
+        margin-bottom: 7px;
+    }
+
+    .takvim-hafta-gunu {
+        text-align: center;
+        color: #6c757d;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .takvim-gunu {
+        aspect-ratio: 1;
+        min-width: 0;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: default;
+    }
+
+    .takvim-gunu-bos {
+        border-color: transparent;
+        background-color: transparent;
+    }
+
+    .takvim-gunu-musait {
+        border-color: #a3cfbb;
+        background-color: #d1e7dd;
+        color: #0a3622;
+    }
+
+    .takvim-gunu-dolu {
+        border-color: #f1aeb5;
+        background-color: #f8d7da;
+        color: #58151c;
+        text-decoration: line-through;
+    }
+
+    .takvim-gunu-gecmis {
+        border-color: #e9ecef;
+        background-color: #f1f3f5;
+        color: #adb5bd;
+    }
+
+    .takvim-gunu-bugun {
+        outline: 2px solid #212529;
+        outline-offset: 1px;
+    }
+
+    .takvim-aciklama {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .takvim-aciklama-ogesi {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .takvim-renk {
+        width: 14px;
+        height: 14px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+
+    .takvim-renk-musait {
+        border-color: #a3cfbb;
+        background-color: #d1e7dd;
+    }
+
+    .takvim-renk-dolu {
+        border-color: #f1aeb5;
+        background-color: #f8d7da;
+    }
+
+    .takvim-renk-gecmis {
+        border-color: #e9ecef;
+        background-color: #f1f3f5;
+    }
+
+    @media (max-width: 575.98px) {
+        .takvim-gunu {
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
+        .takvim-hafta,
+        .takvim-gunler {
+            gap: 4px;
+        }
+    }
+</style>
+
 <section class="py-5 bg-light">
     <div class="container">
 
@@ -241,46 +387,113 @@
                     </div>
                 </div>
 
-                <!-- Dolu tarihler kartı -->
+                <!-- Uygunluk takvimi -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
 
-                        <h2 class="h5 fw-bold mb-3">
-                            📅 Dolu Tarihler
+                        <h2 class="h5 fw-bold mb-4">
+                            📅 Uygunluk Takvimi
                         </h2>
+
+                        <div class="takvim-kapsayici">
+
+                            <div class="takvim-baslik">
+
+                                <button
+                                    type="button"
+                                    id="oncekiAyButonu"
+                                    class="takvim-yon-butonu"
+                                    aria-label="Önceki ay"
+                                >
+                                    ‹
+                                </button>
+
+                                <h3
+                                    id="takvimAyYil"
+                                    class="takvim-ay-yil"
+                                ></h3>
+
+                                <button
+                                    type="button"
+                                    id="sonrakiAyButonu"
+                                    class="takvim-yon-butonu"
+                                    aria-label="Sonraki ay"
+                                >
+                                    ›
+                                </button>
+
+                            </div>
+
+                            <div class="takvim-hafta">
+                                <div class="takvim-hafta-gunu">Pzt</div>
+                                <div class="takvim-hafta-gunu">Sal</div>
+                                <div class="takvim-hafta-gunu">Çar</div>
+                                <div class="takvim-hafta-gunu">Per</div>
+                                <div class="takvim-hafta-gunu">Cum</div>
+                                <div class="takvim-hafta-gunu">Cmt</div>
+                                <div class="takvim-hafta-gunu">Paz</div>
+                            </div>
+
+                            <div
+                                id="takvimGunler"
+                                class="takvim-gunler"
+                            ></div>
+
+                            <div class="takvim-aciklama">
+
+                                <div class="takvim-aciklama-ogesi">
+                                    <span
+                                        class="takvim-renk takvim-renk-musait"
+                                    ></span>
+                                    Müsait
+                                </div>
+
+                                <div class="takvim-aciklama-ogesi">
+                                    <span
+                                        class="takvim-renk takvim-renk-dolu"
+                                    ></span>
+                                    Dolu
+                                </div>
+
+                                <div class="takvim-aciklama-ogesi">
+                                    <span
+                                        class="takvim-renk takvim-renk-gecmis"
+                                    ></span>
+                                    Geçmiş
+                                </div>
+
+                            </div>
+
+                        </div>
 
                         {% if dolu_tarih_araliklari %}
 
-                            <div class="list-group list-group-flush">
+                            <hr class="my-4">
+
+                            <div class="small text-secondary mb-2">
+                                Rezerve edilmiş tarih aralıkları
+                            </div>
+
+                            <div class="d-flex flex-column gap-2">
 
                                 {% for tarih in dolu_tarih_araliklari %}
-
-                                    <div class="list-group-item px-0">
-
-                                        <div class="small text-secondary mb-1">
-                                            Kiralanmış tarih aralığı
-                                        </div>
-
-                                        <div class="fw-semibold">
-                                            {{ tarih.baslangic_tarihi|date:"d F Y" }}
-                                            -
-                                            {{ tarih.bitis_tarihi|date:"d F Y" }}
-                                        </div>
-
+                                    <div class="fw-semibold">
+                                        {{ tarih.baslangic_tarihi|date:"d F Y" }}
+                                        -
+                                        {{ tarih.bitis_tarihi|date:"d F Y" }}
                                     </div>
-
                                 {% endfor %}
 
                             </div>
 
                             <div class="small text-secondary mt-3">
-                                Bu tarihler için yeni kiralama talebi
-                                oluşturulamaz.
+                                Kırmızı gösterilen günler için yeni kiralama
+                                talebi oluşturulamaz.
                             </div>
 
                         {% else %}
 
-                            <div class="alert alert-success mb-0">
+                            <div class="alert alert-success mt-4 mb-0">
                                 Bu ilan için şu anda
                                 <strong>
                                     rezerve edilmiş tarih bulunmuyor.
@@ -298,5 +511,185 @@
 
     </div>
 </section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const doluTarihAraliklari = JSON.parse(
+            "{{ dolu_tarihler_json|escapejs }}"
+        );
+
+        const takvimAyYil = document.getElementById("takvimAyYil");
+        const takvimGunler = document.getElementById("takvimGunler");
+        const oncekiAyButonu = document.getElementById("oncekiAyButonu");
+        const sonrakiAyButonu = document.getElementById("sonrakiAyButonu");
+
+        const ayAdlari = [
+            "Ocak",
+            "Şubat",
+            "Mart",
+            "Nisan",
+            "Mayıs",
+            "Haziran",
+            "Temmuz",
+            "Ağustos",
+            "Eylül",
+            "Ekim",
+            "Kasım",
+            "Aralık",
+        ];
+
+        const bugun = new Date();
+
+        bugun.setHours(0, 0, 0, 0);
+
+        let gosterilenYil = bugun.getFullYear();
+        let gosterilenAy = bugun.getMonth();
+
+        function metniTariheCevir(tarihMetni) {
+            const parcalar = tarihMetni.split("-");
+
+            const yil = Number(parcalar[0]);
+            const ay = Number(parcalar[1]) - 1;
+            const gun = Number(parcalar[2]);
+
+            return new Date(yil, ay, gun);
+        }
+
+        function tarihDoluMu(tarih) {
+            return doluTarihAraliklari.some(function (tarihAraligi) {
+                const baslangicTarihi = metniTariheCevir(
+                    tarihAraligi.baslangic
+                );
+
+                const bitisTarihi = metniTariheCevir(
+                    tarihAraligi.bitis
+                );
+
+                return (
+                    tarih >= baslangicTarihi &&
+                    tarih <= bitisTarihi
+                );
+            });
+        }
+
+        function ayniGunMu(birinciTarih, ikinciTarih) {
+            return (
+                birinciTarih.getFullYear() ===
+                    ikinciTarih.getFullYear() &&
+                birinciTarih.getMonth() ===
+                    ikinciTarih.getMonth() &&
+                birinciTarih.getDate() ===
+                    ikinciTarih.getDate()
+            );
+        }
+
+        function takvimiOlustur() {
+            takvimGunler.innerHTML = "";
+
+            takvimAyYil.textContent =
+                ayAdlari[gosterilenAy] + " " + gosterilenYil;
+
+            const ayinIlkGunu = new Date(
+                gosterilenYil,
+                gosterilenAy,
+                1
+            );
+
+            const ayinSonGunu = new Date(
+                gosterilenYil,
+                gosterilenAy + 1,
+                0
+            );
+
+            const ayinGunSayisi = ayinSonGunu.getDate();
+
+            let baslangicBoslukSayisi = ayinIlkGunu.getDay() - 1;
+
+            if (baslangicBoslukSayisi === -1) {
+                baslangicBoslukSayisi = 6;
+            }
+
+            for (
+                let bosluk = 0;
+                bosluk < baslangicBoslukSayisi;
+                bosluk++
+            ) {
+                const bosGun = document.createElement("div");
+
+                bosGun.className =
+                    "takvim-gunu takvim-gunu-bos";
+
+                takvimGunler.appendChild(bosGun);
+            }
+
+            for (let gun = 1; gun <= ayinGunSayisi; gun++) {
+                const tarih = new Date(
+                    gosterilenYil,
+                    gosterilenAy,
+                    gun
+                );
+
+                tarih.setHours(0, 0, 0, 0);
+
+                const gunKutusu = document.createElement("div");
+
+                gunKutusu.classList.add("takvim-gunu");
+                gunKutusu.textContent = gun;
+
+                if (tarih < bugun) {
+                    gunKutusu.classList.add(
+                        "takvim-gunu-gecmis"
+                    );
+
+                    gunKutusu.title = "Geçmiş tarih";
+                } else if (tarihDoluMu(tarih)) {
+                    gunKutusu.classList.add(
+                        "takvim-gunu-dolu"
+                    );
+
+                    gunKutusu.title = "Bu tarih dolu";
+                } else {
+                    gunKutusu.classList.add(
+                        "takvim-gunu-musait"
+                    );
+
+                    gunKutusu.title = "Bu tarih müsait";
+                }
+
+                if (ayniGunMu(tarih, bugun)) {
+                    gunKutusu.classList.add(
+                        "takvim-gunu-bugun"
+                    );
+                }
+
+                takvimGunler.appendChild(gunKutusu);
+            }
+        }
+
+        oncekiAyButonu.addEventListener("click", function () {
+            gosterilenAy--;
+
+            if (gosterilenAy < 0) {
+                gosterilenAy = 11;
+                gosterilenYil--;
+            }
+
+            takvimiOlustur();
+        });
+
+        sonrakiAyButonu.addEventListener("click", function () {
+            gosterilenAy++;
+
+            if (gosterilenAy > 11) {
+                gosterilenAy = 0;
+                gosterilenYil++;
+            }
+
+            takvimiOlustur();
+        });
+
+        takvimiOlustur();
+    });
+</script>
 
 {% endblock %}
