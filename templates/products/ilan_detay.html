@@ -234,6 +234,38 @@
                         <h1 class="fw-bold mb-3">
                             {{ ilan.baslik }}
                         </h1>
+                        {% if user.is_authenticated %}
+    <form
+        method="post"
+        action="{% url 'favorites:favori_degistir' ilan.id %}"
+        class="mb-3"
+    >
+        {% csrf_token %}
+
+        {% if favoride_mi %}
+            <button
+                type="submit"
+                class="btn btn-danger w-100"
+            >
+                ♥ Favorilerden Çıkar
+            </button>
+        {% else %}
+            <button
+                type="submit"
+                class="btn btn-outline-danger w-100"
+            >
+                ♡ Favorilere Ekle
+            </button>
+        {% endif %}
+    </form>
+{% else %}
+    <a
+        href="{% url 'accounts:giris' %}"
+        class="btn btn-outline-danger w-100 mb-3"
+    >
+        ♡ Favorilere eklemek için giriş yap
+    </a>
+{% endif %}
 
                         <p class="text-secondary fs-5">
                             {{ ilan.aciklama }}

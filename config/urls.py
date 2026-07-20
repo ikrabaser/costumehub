@@ -35,6 +35,10 @@ urlpatterns = [
         "degerlendirmeler/",
         include("reviews.urls"),
     ),
+    path(
+    "favoriler/",
+    include("favorites.urls"),
+    ),
 ]
 
 

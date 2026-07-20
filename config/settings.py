@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "shipping",
     "conversations",
     "reviews",
+    "favorites",
 ]
 
 MIDDLEWARE = [

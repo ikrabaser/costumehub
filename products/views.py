@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from rentals.models import KiralamaTalebi
 from reviews.models import Degerlendirme
+from favorites.models import Favori
 
 from .forms import IlanFormu
 from .models import Ilan, Kategori
@@ -142,6 +143,14 @@ def ilan_detay(request, ilan_id):
         id=ilan_id,
         durum="YAYINDA",
     )
+    favoride_mi = False
+
+    if request.user.is_authenticated:
+        favoride_mi = Favori.objects.filter(
+             kullanici=request.user,
+               ilan=ilan,
+                 ).exists()
+       
 
     bugun = timezone.localdate()
 
@@ -203,6 +212,7 @@ def ilan_detay(request, ilan_id):
     degerlendirme_sayisi = (
         degerlendirmeler.count()
     )
+    
 
     context = {
         "ilan": ilan,
@@ -211,6 +221,7 @@ def ilan_detay(request, ilan_id):
         "degerlendirmeler": degerlendirmeler,
         "ortalama_puan": ortalama_puan,
         "degerlendirme_sayisi": degerlendirme_sayisi,
+        "favoride_mi": favoride_mi,
     }
 
     return render(
