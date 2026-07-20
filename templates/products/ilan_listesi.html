@@ -9,6 +9,31 @@
 
 
 <style>
+    .breadcrumb {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.breadcrumb a {
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+    color: #212529;
+}
+
+.breadcrumb-item.active {
+    color: #212529;
+    font-weight: 600;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: #adb5bd;
+}
+
+
     .ilan-arama-alani {
         background: #ffffff;
         border: 1px solid #e9ecef;
@@ -405,7 +430,40 @@
     </form>
 
 </div>
+{% if secili_kategori_yolu %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small mb-0">
 
+        <li class="breadcrumb-item">
+            <a href="{% url 'products:home' %}">
+                Ana Sayfa
+            </a>
+        </li>
+
+        <li class="breadcrumb-item">
+            <a href="{% url 'products:ilan_listesi' %}">
+                İlanlar
+            </a>
+        </li>
+
+        {% for kategori in secili_kategori_yolu %}
+            {% if forloop.last %}
+                <li
+                    class="breadcrumb-item active"
+                    aria-current="page"
+                >
+                    {{ kategori.ad }}
+                </li>
+            {% else %}
+                <li class="breadcrumb-item">
+                    {{ kategori.ad }}
+                </li>
+            {% endif %}
+        {% endfor %}
+
+    </ol>
+</nav>
+{% endif %}
 
 <!-- Sayfa başlığı -->
 <div
@@ -577,23 +635,6 @@
         {% else %}
 
             <div class="card border-0 shadow-sm">
-                {% if ilan.fotograf %}
-    <img
-        src="{{ ilan.fotograf.url }}"
-        class="card-img-top"
-        alt="{{ ilan.baslik }}"
-        style="height: 240px; object-fit: cover;"
-    >
-{% else %}
-    <div
-        class="d-flex align-items-center justify-content-center bg-light"
-        style="height: 240px;"
-    >
-        <span class="display-4">
-            🎭
-        </span>
-    </div>
-{% endif %}
                 <div class="card-body text-center py-5">
 
                     <div class="display-5 mb-3">

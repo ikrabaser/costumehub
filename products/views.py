@@ -170,6 +170,7 @@ def kategori_ozelliklerini_getir(kategori):
 
 @login_required
 def ilan_olustur(request):
+    secili_kategori = None
     if request.method == "POST":
         form = IlanFormu(
             request.POST,
