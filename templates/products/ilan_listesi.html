@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
     İlanlar | CostumeHub
@@ -9,179 +10,162 @@
 <section class="py-5 bg-light">
     <div class="container">
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+<!-- Filtreleme alanı -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
 
-            <div>
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body p-4">
-                
-                        <form method="GET">
-                
-                            <div class="row g-3">
-                
-                                <div class="col-lg-4">
-                                    <label
-                                        for="arama"
-                                        class="form-label fw-semibold"
-                                    >
-                                        Arama
-                                    </label>
-                
-                                    <input
-                                        type="text"
-                                        id="arama"
-                                        name="arama"
-                                        class="form-control"
-                                        value="{{ arama }}"
-                                        placeholder="Kostüm adı, açıklama veya renk"
-                                    >
-                                </div>
-                
-                                <div class="col-md-6 col-lg-2">
-                                    <label
-                                        for="kategori"
-                                        class="form-label fw-semibold"
-                                    >
-                                        Kategori
-                                    </label>
-                
-                                    <select
-                                        id="kategori"
-                                        name="kategori"
-                                        class="form-select"
-                                    >
-                                        <option value="">
-                                            Tüm kategoriler
-                                        </option>
-                
-                                        {% for kategori in kategoriler %}
-                                            <option
-                                                value="{{ kategori.id }}"
-                                                {% if secili_kategori == kategori.id|stringformat:"s" %}
-                                                    selected
-                                                {% endif %}
-                                            >
-                                                {{ kategori.ad }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                
-                                <div class="col-md-6 col-lg-2">
-                                    <label
-                                        for="beden"
-                                        class="form-label fw-semibold"
-                                    >
-                                        Beden
-                                    </label>
-                
-                                    <select
-                                        id="beden"
-                                        name="beden"
-                                        class="form-select"
-                                    >
-                                        <option value="">
-                                            Tüm bedenler
-                                        </option>
-                
-                                        {% for deger, etiket in beden_secenekleri %}
-                                            <option
-                                                value="{{ deger }}"
-                                                {% if secili_beden == deger %}
-                                                    selected
-                                                {% endif %}
-                                            >
-                                                {{ etiket }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                
-                                <div class="col-md-6 col-lg-2">
-                                    <label
-                                        for="sehir"
-                                        class="form-label fw-semibold"
-                                    >
-                                        Şehir
-                                    </label>
-                
-                                    <input
-                                        type="text"
-                                        id="sehir"
-                                        name="sehir"
-                                        class="form-control"
-                                        value="{{ sehir }}"
-                                        placeholder="Örn. Ankara"
-                                    >
-                                </div>
-                
-                                <div class="col-md-6 col-lg-2">
-                                    <label
-                                        for="maksimum_fiyat"
-                                        class="form-label fw-semibold"
-                                    >
-                                        En yüksek fiyat
-                                    </label>
-                
-                                    <input
-                                        type="number"
-                                        id="maksimum_fiyat"
-                                        name="maksimum_fiyat"
-                                        class="form-control"
-                                        value="{{ maksimum_fiyat }}"
-                                        min="0"
-                                        step="0.01"
-                                        placeholder="₺"
-                                    >
-                                </div>
-                
-                            </div>
-                
-                            <div class="d-flex flex-wrap gap-2 mt-3">
-                
-                                <button
-                                    type="submit"
-                                    class="btn btn-dark"
-                                >
-                                    Filtrele
-                                </button>
-                
-                                <a
-                                    href="{% url 'products:ilan_listesi' %}"
-                                    class="btn btn-outline-secondary"
-                                >
-                                    Temizle
-                                </a>
-                
-                            </div>
-                
-                        </form>
-                
-                    </div>
+        <form method="GET">
+
+            <div class="row g-3 align-items-start">
+
+                <div class="col-md-6 col-lg-3">
+                    <label
+                        for="arama"
+                        class="form-label fw-semibold"
+                    >
+                        Arama
+                    </label>
+
+                    <input
+                        type="text"
+                        id="arama"
+                        name="arama"
+                        class="form-control"
+                        value="{{ arama }}"
+                        placeholder="Kostüm adı, açıklama veya renk"
+                    >
                 </div>
-                <span class="badge text-bg-warning mb-2">
-                    CostumeHub İlanları
-                </span>
 
-                <h1 class="fw-bold mb-1">
-                    Kiralık Kostümleri Keşfet
-                </h1>
+                <div class="col-md-6 col-lg-3">
+                    <div id="kategori-secim-alani"></div>
 
-                <p class="text-secondary mb-0">
-                    Sana uygun kostüm ve özel gün kıyafetlerini incele.
-                </p>
+                    <input
+                        type="hidden"
+                        id="id_kategori"
+                        name="kategori"
+                        value="{{ secili_kategori }}"
+                    >
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <label
+                        for="beden"
+                        class="form-label fw-semibold"
+                    >
+                        Beden
+                    </label>
+
+                    <select
+                        id="beden"
+                        name="beden"
+                        class="form-select"
+                    >
+                        <option value="">
+                            Tüm bedenler
+                        </option>
+
+                        {% for deger, etiket in beden_secenekleri %}
+                            <option
+                                value="{{ deger }}"
+                                {% if secili_beden == deger %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ etiket }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <label
+                        for="sehir"
+                        class="form-label fw-semibold"
+                    >
+                        Şehir
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sehir"
+                        name="sehir"
+                        class="form-control"
+                        value="{{ sehir }}"
+                        placeholder="Örn. Ankara"
+                    >
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <label
+                        for="maksimum_fiyat"
+                        class="form-label fw-semibold"
+                    >
+                        En yüksek fiyat
+                    </label>
+
+                    <input
+                        type="number"
+                        id="maksimum_fiyat"
+                        name="maksimum_fiyat"
+                        class="form-control"
+                        value="{{ maksimum_fiyat }}"
+                        min="0"
+                        step="0.01"
+                        placeholder="₺"
+                    >
+                </div>
+
             </div>
 
-            {% if user.is_authenticated %}
-                <a
-                    href="{% url 'products:ilan_olustur' %}"
-                    class="btn btn-dark mt-3 mt-md-0"
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button
+                    type="submit"
+                    class="btn btn-dark"
                 >
-                    Yeni İlan Ver
-                </a>
-            {% endif %}
+                    Filtrele
+                </button>
 
-        </div>
+                <a
+                    href="{% url 'products:ilan_listesi' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Temizle
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<!-- Sayfa başlığı -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+
+    <div>
+        <span class="badge text-bg-warning mb-2">
+            CostumeHub İlanları
+        </span>
+
+        <h1 class="fw-bold mb-1">
+            Kiralık Kostümleri Keşfet
+        </h1>
+
+        <p class="text-secondary mb-0">
+            Sana uygun kostüm ve özel gün kıyafetlerini incele.
+        </p>
+    </div>
+
+    {% if user.is_authenticated %}
+        <a
+            href="{% url 'products:ilan_olustur' %}"
+            class="btn btn-dark mt-3 mt-md-0"
+        >
+            Yeni İlan Ver
+        </a>
+    {% endif %}
+
+</div>
         <div class="d-flex justify-content-between align-items-center mb-3">
 
             <p class="text-secondary mb-0">
@@ -341,5 +325,28 @@
 
     </div>
 </section>
+{{ ana_kategoriler|json_script:"ana-kategoriler-verisi" }}
+{{ secili_kategori_yolu|json_script:"secili-kategori-yolu-verisi" }}
+
+<script>
+    window.anaKategoriler = JSON.parse(
+        document.getElementById(
+            "ana-kategoriler-verisi"
+        ).textContent
+    );
+
+    window.seciliKategoriYolu = JSON.parse(
+        document.getElementById(
+            "secili-kategori-yolu-verisi"
+        ).textContent
+    );
+
+    window.altKategoriUrlSablonu =
+        "{% url 'products:kategori_alt_kategorileri' 0 %}";
+
+    window.kategoriSecimModu = "filtre";
+</script>
+
+<script src="{% static 'js/kategori-secimi.js' %}"></script>
 
 {% endblock %}

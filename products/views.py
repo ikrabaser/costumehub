@@ -150,6 +150,21 @@ def ilan_olustur(request):
         context,
     )
 
+def kategori_ve_alt_kategori_idleri(kategori):
+    kategori_idleri = [kategori.id]
+
+    alt_kategoriler = kategori.alt_kategoriler.filter(
+        aktif_mi=True,
+    )
+
+    for alt_kategori in alt_kategoriler:
+        kategori_idleri.extend(
+            kategori_ve_alt_kategori_idleri(
+                alt_kategori
+            )
+        )
+    return kategori_idleri
+
 
 def ilan_listesi(request):
     ilanlar = (
@@ -164,14 +179,31 @@ def ilan_listesi(request):
         .order_by("-olusturulma_tarihi")
     )
 
-    arama = request.GET.get("arama", "").strip()
-    kategori = request.GET.get("kategori", "").strip()
-    beden = request.GET.get("beden", "").strip()
-    sehir = request.GET.get("sehir", "").strip()
+    arama = request.GET.get(
+        "arama",
+        "",
+    ).strip()
+
+    kategori = request.GET.get(
+        "kategori",
+        "",
+    ).strip()
+
+    beden = request.GET.get(
+        "beden",
+        "",
+    ).strip()
+
+    sehir = request.GET.get(
+        "sehir",
+        "",
+    ).strip()
+
     maksimum_fiyat = request.GET.get(
         "maksimum_fiyat",
         "",
     ).strip()
+
 
     if arama:
         ilanlar = ilanlar.filter(
@@ -180,20 +212,64 @@ def ilan_listesi(request):
             | Q(renk__icontains=arama)
         )
 
+
+    secili_kategori = None
+    secili_kategori_yolu = []
+
     if kategori:
-        ilanlar = ilanlar.filter(
-            kategori_id=kategori,
-        )
+        try:
+            secili_kategori = Kategori.objects.get(
+                id=kategori,
+                aktif_mi=True,
+            )
+
+            kategori_idleri = (
+                kategori_ve_alt_kategori_idleri(
+                    secili_kategori
+                )
+            )
+
+            ilanlar = ilanlar.filter(
+                kategori_id__in=kategori_idleri,
+            )
+
+            kategori_yolu = [
+                *secili_kategori.atalari_getir(),
+                secili_kategori,
+            ]
+
+            secili_kategori_yolu = [
+                {
+                    "id": kategori_nesnesi.id,
+                    "ad": kategori_nesnesi.ad,
+                    "ust_kategori_id": (
+                        kategori_nesnesi.ust_kategori_id
+                    ),
+                }
+                for kategori_nesnesi in kategori_yolu
+            ]
+
+        except (
+            Kategori.DoesNotExist,
+            TypeError,
+            ValueError,
+        ):
+            kategori = ""
+            secili_kategori = None
+            secili_kategori_yolu = []
+
 
     if beden:
         ilanlar = ilanlar.filter(
             beden=beden,
         )
 
+
     if sehir:
         ilanlar = ilanlar.filter(
             sehir__icontains=sehir,
         )
+
 
     if maksimum_fiyat:
         try:
@@ -203,13 +279,15 @@ def ilan_listesi(request):
 
             if maksimum_fiyat_degeri >= 0:
                 ilanlar = ilanlar.filter(
-                    gunluk_fiyat__lte=maksimum_fiyat_degeri,
+                    gunluk_fiyat__lte=(
+                        maksimum_fiyat_degeri
+                    ),
                 )
 
         except ValueError:
             pass
 
-    # Yalnızca ana kategoriler
+
     ana_kategoriler = list(
         Kategori.objects.filter(
             aktif_mi=True,
@@ -225,31 +303,9 @@ def ilan_listesi(request):
         )
     )
 
-    # Filtre uygulanmışsa seçili kategorinin
-    # ana kategoriden başlayarak yolunu oluşturur.
-    secili_kategori_yolu = []
-
-    if kategori:
-        try:
-            mevcut_kategori = Kategori.objects.get(
-                id=kategori,
-                aktif_mi=True,
-            )
-
-            while mevcut_kategori is not None:
-                secili_kategori_yolu.insert(
-                    0,
-                    mevcut_kategori.id,
-                )
-
-                mevcut_kategori = (
-                    mevcut_kategori.ust_kategori
-                )
-
-        except Kategori.DoesNotExist:
-            kategori = ""
 
     context = {
+
         "ilanlar": ilanlar,
         "ana_kategoriler": ana_kategoriler,
         "secili_kategori_yolu": secili_kategori_yolu,
@@ -259,6 +315,7 @@ def ilan_listesi(request):
         "secili_beden": beden,
         "sehir": sehir,
         "maksimum_fiyat": maksimum_fiyat,
+
     }
 
     return render(
@@ -266,7 +323,6 @@ def ilan_listesi(request):
         "products/ilan_listesi.html",
         context,
     )
-    
 
 
 def ilan_detay(request, ilan_id):
