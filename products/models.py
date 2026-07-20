@@ -467,6 +467,46 @@ class Ilan(models.Model):
         return self.baslik
 
 
+class IlanFotograf(models.Model):
+    ilan = models.ForeignKey(
+        Ilan,
+        on_delete=models.CASCADE,
+        related_name="fotograflar",
+        verbose_name="İlan",
+    )
+
+    fotograf = models.ImageField(
+        upload_to="ilanlar/",
+        verbose_name="Fotoğraf",
+    )
+
+    ana_fotograf_mi = models.BooleanField(
+        default=False,
+        verbose_name="Ana fotoğraf mı?",
+    )
+
+    sira = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Gösterim sırası",
+    )
+
+    olusturulma_tarihi = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        verbose_name = "İlan fotoğrafı"
+        verbose_name_plural = "İlan fotoğrafları"
+
+        ordering = [
+            "sira",
+            "id",
+        ]
+
+    def __str__(self):
+        return f"{self.ilan.baslik} - Fotoğraf {self.id}"
+
+
 class IlanOzellikDegeri(models.Model):
     ilan = models.ForeignKey(
         Ilan,

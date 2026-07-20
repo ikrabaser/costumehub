@@ -3,7 +3,50 @@ from django import forms
 from .models import Ilan, Kategori
 
 
+class CokluDosyaInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class CokluDosyaAlani(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault(
+            "widget",
+            CokluDosyaInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": "image/*",
+                }
+            ),
+        )
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        tek_dosya_temizle = super().clean
+
+        if isinstance(data, (list, tuple)):
+            return [
+                tek_dosya_temizle(dosya, initial)
+                for dosya in data
+            ]
+
+        if data:
+            return [
+                tek_dosya_temizle(data, initial)
+            ]
+
+        return []
+
+
 class IlanFormu(forms.ModelForm):
+    fotograflar = CokluDosyaAlani(
+        required=False,
+        label="İlan fotoğrafları",
+        help_text=(
+            "Birden fazla fotoğraf seçebilirsiniz. "
+            "İlk seçilen fotoğraf ana fotoğraf olarak kullanılacaktır."
+        ),
+    )
+
     class Meta:
         model = Ilan
 
@@ -11,7 +54,7 @@ class IlanFormu(forms.ModelForm):
             "kategori",
             "baslik",
             "aciklama",
-            "fotograf",
+            "fotograflar",
             "beden",
             "renk",
             "gunluk_fiyat",
@@ -23,7 +66,6 @@ class IlanFormu(forms.ModelForm):
             "kategori": "Kategori",
             "baslik": "İlan başlığı",
             "aciklama": "Açıklama",
-            "fotograf": "İlan fotoğrafı",
             "beden": "Beden",
             "renk": "Renk",
             "gunluk_fiyat": "Günlük kiralama ücreti",
@@ -53,12 +95,6 @@ class IlanFormu(forms.ModelForm):
                         "ve diğer detayları yazın"
                     ),
                     "rows": 5,
-                }
-            ),
-            "fotograf": forms.ClearableFileInput(
-                attrs={
-                    "class": "form-control",
-                    "accept": "image/*",
                 }
             ),
             "beden": forms.Select(
@@ -138,6 +174,30 @@ class IlanFormu(forms.ModelForm):
             )
 
         return kategori
+
+    def clean_fotograflar(self):
+        fotograflar = self.cleaned_data.get("fotograflar", [])
+
+        en_fazla_fotograf_sayisi = 10
+        en_fazla_dosya_boyutu = 5 * 1024 * 1024
+
+        if len(fotograflar) > en_fazla_fotograf_sayisi:
+            raise forms.ValidationError(
+                "En fazla 10 fotoğraf yükleyebilirsiniz."
+            )
+
+        for fotograf in fotograflar:
+            if fotograf.size > en_fazla_dosya_boyutu:
+                raise forms.ValidationError(
+                    "Her fotoğraf en fazla 5 MB olabilir."
+                )
+
+            if not fotograf.content_type.startswith("image/"):
+                raise forms.ValidationError(
+                    "Yalnızca görsel dosyaları yükleyebilirsiniz."
+                )
+
+        return fotograflar
 
     def clean_gunluk_fiyat(self):
         gunluk_fiyat = self.cleaned_data["gunluk_fiyat"]

@@ -172,6 +172,103 @@
             gap: 4px;
         }
     }
+
+    .ilan-galeri {
+        background-color: #ffffff;
+    }
+
+    .ilan-ana-fotograf-kapsayici {
+        position: relative;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+
+    .ilan-ana-fotograf {
+        display: block;
+        width: 100%;
+        height: 560px;
+        object-fit: contain;
+        background-color: #f8f9fa;
+    }
+
+    .ilan-galeri-yon {
+        position: absolute;
+        top: 50%;
+        width: 46px;
+        height: 46px;
+        border: 0;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.18);
+        font-size: 2rem;
+        line-height: 1;
+        transform: translateY(-50%);
+        transition: transform 0.2s, background-color 0.2s;
+        z-index: 2;
+    }
+
+    .ilan-galeri-yon:hover {
+        background-color: #ffffff;
+        transform: translateY(-50%) scale(1.06);
+    }
+
+    .ilan-galeri-yon-sol { left: 18px; }
+    .ilan-galeri-yon-sag { right: 18px; }
+
+    .ilan-fotograf-sayaci {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        padding: 6px 11px;
+        border-radius: 999px;
+        background-color: rgba(33, 37, 41, 0.78);
+        color: #ffffff;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .ilan-kucuk-fotograflar {
+        display: flex;
+        gap: 10px;
+        padding: 14px;
+        overflow-x: auto;
+        border-top: 1px solid #e9ecef;
+        scrollbar-width: thin;
+    }
+
+    .ilan-kucuk-fotograf-butonu {
+        flex: 0 0 auto;
+        width: 78px;
+        height: 96px;
+        padding: 3px;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        background-color: #ffffff;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .ilan-kucuk-fotograf-butonu:hover { transform: translateY(-2px); }
+    .ilan-kucuk-fotograf-butonu.aktif { border-color: #ffc107; }
+
+    .ilan-kucuk-fotograf {
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
+        object-fit: cover;
+    }
+
+    @media (max-width: 767.98px) {
+        .ilan-ana-fotograf { height: 420px; }
+        .ilan-galeri-yon { width: 40px; height: 40px; }
+        .ilan-galeri-yon-sol { left: 10px; }
+        .ilan-galeri-yon-sag { right: 10px; }
+    }
+
+    @media (max-width: 575.98px) {
+        .ilan-ana-fotograf { height: 340px; }
+        .ilan-kucuk-fotograf-butonu { width: 66px; height: 82px; }
+    }
+
 </style>
 
 <section class="py-5 bg-light">
@@ -193,23 +290,86 @@
 
                 <div class="card border-0 shadow-sm">
 
-                    {% if ilan.fotograf %}
-                        <img
-                            src="{{ ilan.fotograf.url }}"
-                            class="card-img-top"
-                            alt="{{ ilan.baslik }}"
-                            style="max-height: 520px; object-fit: cover;"
-                        >
-                    {% else %}
-                        <div
-                            class="d-flex align-items-center justify-content-center bg-light"
-                            style="height: 380px;"
-                        >
-                            <span class="display-1">
-                                🎭
-                            </span>
-                        </div>
-                    {% endif %}
+                    {% with fotograflar=ilan.fotograflar.all %}
+                        {% if fotograflar %}
+                            <div class="ilan-galeri">
+                                <div class="ilan-ana-fotograf-kapsayici">
+                                    <img
+                                        id="ilanAnaFotograf"
+                                        src="{{ fotograflar.0.fotograf.url }}"
+                                        class="ilan-ana-fotograf"
+                                        alt="{{ ilan.baslik }}"
+                                    >
+
+                                    {% if fotograflar|length > 1 %}
+                                        <button
+                                            type="button"
+                                            id="oncekiFotografButonu"
+                                            class="ilan-galeri-yon ilan-galeri-yon-sol"
+                                            aria-label="Önceki fotoğraf"
+                                        >
+                                            ‹
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="sonrakiFotografButonu"
+                                            class="ilan-galeri-yon ilan-galeri-yon-sag"
+                                            aria-label="Sonraki fotoğraf"
+                                        >
+                                            ›
+                                        </button>
+
+                                        <div
+                                            id="fotografSayaci"
+                                            class="ilan-fotograf-sayaci"
+                                        >
+                                            1 / {{ fotograflar|length }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {% if fotograflar|length > 1 %}
+                                    <div class="ilan-kucuk-fotograflar">
+                                        {% for fotograf in fotograflar %}
+                                            <button
+                                                type="button"
+                                                class="ilan-kucuk-fotograf-butonu {% if forloop.first %}aktif{% endif %}"
+                                                data-fotograf-url="{{ fotograf.fotograf.url }}"
+                                                data-fotograf-sira="{{ forloop.counter0 }}"
+                                                aria-label="{{ forloop.counter }}. fotoğrafı göster"
+                                            >
+                                                <img
+                                                    src="{{ fotograf.fotograf.url }}"
+                                                    class="ilan-kucuk-fotograf"
+                                                    alt="{{ ilan.baslik }} - {{ forloop.counter }}"
+                                                >
+                                            </button>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        {% elif ilan.fotograf %}
+                            <div class="ilan-ana-fotograf-kapsayici">
+                                <img
+                                    src="{{ ilan.fotograf.url }}"
+                                    class="ilan-ana-fotograf"
+                                    alt="{{ ilan.baslik }}"
+                                >
+                            </div>
+
+                        {% else %}
+                            <div
+                                class="d-flex align-items-center justify-content-center bg-light"
+                                style="height: 380px;"
+                            >
+                                <span class="display-1">
+                                    🎭
+                                </span>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
 
                     <div class="card-body p-4 p-md-5">
 
@@ -836,6 +996,77 @@
 
     </div>
 </section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const anaFotograf = document.getElementById("ilanAnaFotograf");
+        const kucukFotografButonlari = Array.from(
+            document.querySelectorAll(".ilan-kucuk-fotograf-butonu")
+        );
+        const oncekiButon = document.getElementById("oncekiFotografButonu");
+        const sonrakiButon = document.getElementById("sonrakiFotografButonu");
+        const fotografSayaci = document.getElementById("fotografSayaci");
+
+        if (!anaFotograf || kucukFotografButonlari.length === 0) {
+            return;
+        }
+
+        let aktifFotografSirasi = 0;
+
+        function fotografiGoster(fotografSirasi) {
+            if (
+                fotografSirasi < 0 ||
+                fotografSirasi >= kucukFotografButonlari.length
+            ) {
+                return;
+            }
+
+            aktifFotografSirasi = fotografSirasi;
+            const aktifButon = kucukFotografButonlari[aktifFotografSirasi];
+            anaFotograf.src = aktifButon.dataset.fotografUrl;
+
+            kucukFotografButonlari.forEach(function (buton) {
+                buton.classList.remove("aktif");
+            });
+
+            aktifButon.classList.add("aktif");
+            aktifButon.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "center",
+            });
+
+            if (fotografSayaci) {
+                fotografSayaci.textContent =
+                    `${aktifFotografSirasi + 1} / ${kucukFotografButonlari.length}`;
+            }
+        }
+
+        kucukFotografButonlari.forEach(function (buton) {
+            buton.addEventListener("click", function () {
+                fotografiGoster(Number(this.dataset.fotografSira));
+            });
+        });
+
+        if (oncekiButon) {
+            oncekiButon.addEventListener("click", function () {
+                const yeniSira = aktifFotografSirasi === 0
+                    ? kucukFotografButonlari.length - 1
+                    : aktifFotografSirasi - 1;
+                fotografiGoster(yeniSira);
+            });
+        }
+
+        if (sonrakiButon) {
+            sonrakiButon.addEventListener("click", function () {
+                const yeniSira = aktifFotografSirasi === kucukFotografButonlari.length - 1
+                    ? 0
+                    : aktifFotografSirasi + 1;
+                fotografiGoster(yeniSira);
+            });
+        }
+    });
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

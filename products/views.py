@@ -16,6 +16,7 @@ from favorites.models import Favori
 from .forms import IlanFormu
 from .models import (
     Ilan,
+    IlanFotograf,
     IlanOzellikDegeri,
     Kategori,
     KategoriOzellik,
@@ -167,10 +168,10 @@ def kategori_ozelliklerini_getir(kategori):
         )
 
     return ozellikler
-
 @login_required
 def ilan_olustur(request):
     secili_kategori = None
+
     if request.method == "POST":
         form = IlanFormu(
             request.POST,
@@ -178,9 +179,11 @@ def ilan_olustur(request):
         )
 
         if form.is_valid():
-            kategori = form.cleaned_data[
-                "kategori"
-            ]
+            kategori = form.cleaned_data["kategori"]
+            fotograflar = form.cleaned_data.get(
+                "fotograflar",
+                [],
+            )
 
             kategori_ozellikleri = (
                 kategori_ozelliklerini_getir(
@@ -192,9 +195,7 @@ def ilan_olustur(request):
             dinamik_alan_hatasi_var_mi = False
 
             for ozellik in kategori_ozellikleri:
-                alan_adi = (
-                    f"ozellik_{ozellik.id}"
-                )
+                alan_adi = f"ozellik_{ozellik.id}"
 
                 girilen_deger = request.POST.get(
                     alan_adi,
@@ -282,10 +283,7 @@ def ilan_olustur(request):
 
                         dinamik_alan_hatasi_var_mi = True
 
-                elif (
-                    ozellik.veri_tipi
-                    == "EVET_HAYIR"
-                ):
+                elif ozellik.veri_tipi == "EVET_HAYIR":
                     if girilen_deger not in [
                         "EVET",
                         "HAYIR",
@@ -305,9 +303,7 @@ def ilan_olustur(request):
                         {
                             "ozellik": ozellik,
                             "secenek": None,
-                            "metin_degeri": (
-                                girilen_deger
-                            ),
+                            "metin_degeri": girilen_deger,
                         }
                     )
 
@@ -316,9 +312,7 @@ def ilan_olustur(request):
                         {
                             "ozellik": ozellik,
                             "secenek": None,
-                            "metin_degeri": (
-                                girilen_deger
-                            ),
+                            "metin_degeri": girilen_deger,
                         }
                     )
 
@@ -328,11 +322,34 @@ def ilan_olustur(request):
                         commit=False
                     )
 
-                    ilan.ilan_sahibi = (
-                        request.user
-                    )
-
+                    ilan.ilan_sahibi = request.user
                     ilan.save()
+
+                    for sira, fotograf in enumerate(
+                        fotograflar
+                    ):
+                        ilan_fotografi = (
+                            IlanFotograf.objects.create(
+                                ilan=ilan,
+                                fotograf=fotograf,
+                                ana_fotograf_mi=(
+                                    sira == 0
+                                ),
+                                sira=sira,
+                            )
+                        )
+
+                        if sira == 0:
+                            ilan.fotograf = (
+                                ilan_fotografi.fotograf
+                            )
+
+                    if fotograflar:
+                        ilan.save(
+                            update_fields=[
+                                "fotograf",
+                            ]
+                        )
 
                     for deger_bilgisi in (
                         kaydedilecek_degerler
@@ -367,98 +384,18 @@ def ilan_olustur(request):
                 )
 
     else:
+        baslangic_sehri = ""
+
+        if hasattr(request.user, "profil"):
+            baslangic_sehri = (
+                request.user.profil.sehir
+            )
+
         form = IlanFormu(
             initial={
-                "sehir": request.user.profil.sehir,
+                "sehir": baslangic_sehri,
             }
         )
-
-    # Seçilen kategoriye ait dinamik özellik filtreleri
-    if secili_kategori:
-        filtrelenebilir_ozellikler = [
-            ozellik
-            for ozellik in kategori_ozelliklerini_getir(
-                secili_kategori
-            )
-            if ozellik.filtrelenebilir_mi
-        ]
-
-        for ozellik in filtrelenebilir_ozellikler:
-            parametre_adi = f"ozellik_{ozellik.id}"
-
-            secili_deger = request.GET.get(
-                parametre_adi,
-                "",
-            ).strip()
-
-            if not secili_deger:
-                continue
-
-            ozellik_degerleri = (
-                IlanOzellikDegeri.objects.filter(
-                    ozellik=ozellik,
-                )
-            )
-
-            if ozellik.veri_tipi == "SECIM":
-                try:
-                    secenek_id = int(secili_deger)
-                except (TypeError, ValueError):
-                    continue
-
-                ozellik_degerleri = (
-                    ozellik_degerleri.filter(
-                        secenek_id=secenek_id,
-                    )
-                )
-
-            elif ozellik.veri_tipi == "EVET_HAYIR":
-                if secili_deger not in [
-                    "EVET",
-                    "HAYIR",
-                ]:
-                    continue
-
-                ozellik_degerleri = (
-                    ozellik_degerleri.filter(
-                        metin_degeri=secili_deger,
-                    )
-                )
-
-            elif ozellik.veri_tipi == "SAYI":
-                try:
-                    sayisal_deger = Decimal(
-                        secili_deger.replace(
-                            ",",
-                            ".",
-                        )
-                    )
-                except InvalidOperation:
-                    continue
-
-                ozellik_degerleri = (
-                    ozellik_degerleri.filter(
-                        metin_degeri=str(
-                            sayisal_deger
-                        ),
-                    )
-                )
-
-            else:
-                ozellik_degerleri = (
-                    ozellik_degerleri.filter(
-                        metin_degeri__icontains=(
-                            secili_deger
-                        ),
-                    )
-                )
-
-            ilanlar = ilanlar.filter(
-                id__in=ozellik_degerleri.values(
-                    "ilan_id"
-                )
-            )
-
 
     ana_kategoriler = list(
         Kategori.objects.filter(

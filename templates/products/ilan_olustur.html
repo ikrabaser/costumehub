@@ -6,36 +6,22 @@
 {% endblock %}
 
 {% block content %}
-
 <section class="py-5">
     <div class="container">
-
         <div class="row justify-content-center">
             <div class="col-lg-8">
-
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4 p-md-5">
-
                         <div class="mb-4">
-                            <span class="badge text-bg-warning mb-2">
-                                Yeni İlan
-                            </span>
-
-                            <h1 class="h3 fw-bold mb-2">
-                                Kostümünü Kiralamaya Aç
-                            </h1>
-
+                            <span class="badge text-bg-warning mb-2">Yeni İlan</span>
+                            <h1 class="h3 fw-bold mb-2">Kostümünü Kiralamaya Aç</h1>
                             <p class="text-secondary mb-0">
                                 İlan bilgilerini eksiksiz doldurarak kostümünü
                                 CostumeHub topluluğuyla paylaşabilirsin.
                             </p>
                         </div>
 
-                        <form
-                            method="POST"
-                            enctype="multipart/form-data"
-                            novalidate
-                        >
+                        <form method="POST" enctype="multipart/form-data" novalidate>
                             {% csrf_token %}
 
                             {% if form.non_field_errors %}
@@ -47,148 +33,102 @@
                             {% endif %}
 
                             <div class="row">
-
                                 <div class="col-12 mb-4">
-                                    <label class="form-label fw-semibold">
-                                        Kategori
-                                    </label>
-
+                                    <label class="form-label fw-semibold">Kategori</label>
                                     {{ form.kategori }}
 
-                                    <div
-                                        id="kategori-secim-alani"
-                                        class="d-flex flex-column gap-3"
-                                    ></div>
+                                    <div id="kategori-secim-alani" class="d-flex flex-column gap-3"></div>
 
                                     <div class="form-text">
-                                        Ana kategoriden başlayarak ilanına en uygun
-                                        son kategoriyi seç.
+                                        Ana kategoriden başlayarak ilanına en uygun son kategoriyi seç.
                                     </div>
 
                                     {% for hata in form.kategori.errors %}
-                                        <div class="text-danger small mt-1">
-                                            {{ hata }}
-                                        </div>
+                                        <div class="text-danger small mt-1">{{ hata }}</div>
                                     {% endfor %}
                                 </div>
 
-                                <div
-                                    id="dinamik-ozellikler-bolumu"
-                                    class="col-12 mb-4 d-none"
-                                >
+                                <div id="dinamik-ozellikler-bolumu" class="col-12 mb-4 d-none">
                                     <div class="border rounded-3 p-3 p-md-4">
-
                                         <div class="mb-3">
-                                            <h2 class="h5 fw-bold mb-1">
-                                                Kategori Özellikleri
-                                            </h2>
-
+                                            <h2 class="h5 fw-bold mb-1">Kategori Özellikleri</h2>
                                             <p class="text-secondary small mb-0">
-                                                Seçtiğin kategoriye özel bilgileri
-                                                doldur.
+                                                Seçtiğin kategoriye özel bilgileri doldur.
                                             </p>
                                         </div>
 
-                                        <div
-                                            id="dinamik-ozellikler-yukleniyor"
-                                            class="d-none"
-                                        >
-                                            <div
-                                                class="spinner-border spinner-border-sm"
-                                                role="status"
-                                            >
-                                                <span class="visually-hidden">
-                                                    Yükleniyor...
-                                                </span>
+                                        <div id="dinamik-ozellikler-yukleniyor" class="d-none">
+                                            <div class="spinner-border spinner-border-sm" role="status">
+                                                <span class="visually-hidden">Yükleniyor...</span>
                                             </div>
-
-                                            <span class="ms-2 text-secondary">
-                                                Özellikler yükleniyor...
-                                            </span>
+                                            <span class="ms-2 text-secondary">Özellikler yükleniyor...</span>
                                         </div>
 
-                                        <div
-                                            id="dinamik-ozellikler-hata"
-                                            class="alert alert-danger d-none mb-0"
-                                        ></div>
-
-                                        <div
-                                            id="dinamik-ozellikler-alani"
-                                            class="row"
-                                        ></div>
-
+                                        <div id="dinamik-ozellikler-hata" class="alert alert-danger d-none mb-0"></div>
+                                        <div id="dinamik-ozellikler-alani" class="row"></div>
                                     </div>
                                 </div>
 
                                 {% for alan in form %}
                                     {% if alan.name != "kategori" %}
+                                        {% if alan.name == "fotograflar" %}
+                                            <div class="col-12 mb-4">
+                                                <label for="{{ alan.id_for_label }}" class="form-label fw-semibold">
+                                                    {{ alan.label }}
+                                                </label>
 
-                                        {% if alan.name == "aciklama" %}
-                                            <div class="col-12 mb-3">
+                                                {{ alan }}
+
+                                                {% if alan.help_text %}
+                                                    <div class="form-text">{{ alan.help_text }}</div>
+                                                {% endif %}
+
+                                                <div id="fotograf-onizlemeleri" class="row g-3 mt-2"></div>
+
+                                                {% for hata in alan.errors %}
+                                                    <div class="text-danger small mt-1">{{ hata }}</div>
+                                                {% endfor %}
+                                            </div>
                                         {% else %}
-                                            <div class="col-md-6 mb-3">
-                                        {% endif %}
-
-                                            <label
-                                                for="{{ alan.id_for_label }}"
-                                                class="form-label fw-semibold"
-                                            >
-                                                {{ alan.label }}
-                                            </label>
-
-                                            {{ alan }}
-
-                                            {% if alan.help_text %}
-                                                <div class="form-text">
-                                                    {{ alan.help_text }}
-                                                </div>
+                                            {% if alan.name == "aciklama" %}
+                                                <div class="col-12 mb-3">
+                                            {% else %}
+                                                <div class="col-md-6 mb-3">
                                             {% endif %}
 
-                                            {% for hata in alan.errors %}
-                                                <div class="text-danger small mt-1">
-                                                    {{ hata }}
-                                                </div>
-                                            {% endfor %}
+                                                <label for="{{ alan.id_for_label }}" class="form-label fw-semibold">
+                                                    {{ alan.label }}
+                                                </label>
 
-                                        </div>
+                                                {{ alan }}
 
+                                                {% if alan.help_text %}
+                                                    <div class="form-text">{{ alan.help_text }}</div>
+                                                {% endif %}
+
+                                                {% for hata in alan.errors %}
+                                                    <div class="text-danger small mt-1">{{ hata }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
-
                             </div>
 
                             <div class="alert alert-light border mt-3">
                                 <strong>İpucu:</strong>
-                                Başlık ve açıklamada kostümün durumu, kullanım
-                                detayları ve kiralama koşullarını açıkça belirt.
+                                Başlık ve açıklamada kostümün durumu, kullanım detayları ve kiralama koşullarını açıkça belirt.
                             </div>
 
                             <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-dark px-4"
-                                >
-                                    İlanı Yayınla
-                                </button>
-
-                                <a
-                                    href="{% url 'products:home' %}"
-                                    class="btn btn-outline-secondary px-4"
-                                >
-                                    Vazgeç
-                                </a>
-
+                                <button type="submit" class="btn btn-dark px-4">İlanı Yayınla</button>
+                                <a href="{% url 'products:home' %}" class="btn btn-outline-secondary px-4">Vazgeç</a>
                             </div>
-
                         </form>
-
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 </section>
 
@@ -197,15 +137,11 @@
 
 <script>
     window.anaKategoriler = JSON.parse(
-        document.getElementById(
-            "ana-kategoriler-verisi"
-        ).textContent
+        document.getElementById("ana-kategoriler-verisi").textContent
     );
 
     window.seciliKategoriYolu = JSON.parse(
-        document.getElementById(
-            "secili-kategori-yolu-verisi"
-        ).textContent
+        document.getElementById("secili-kategori-yolu-verisi").textContent
     );
 
     window.altKategoriUrlSablonu =
@@ -219,5 +155,52 @@
 
 <script src="{% static 'js/kategori-secimi.js' %}"></script>
 <script src="{% static 'js/kategori-ozellikleri.js' %}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fotografInput = document.getElementById("id_fotograflar");
+        const onizlemeAlani = document.getElementById("fotograf-onizlemeleri");
+
+        if (!fotografInput || !onizlemeAlani) {
+            return;
+        }
+
+        fotografInput.addEventListener("change", function () {
+            onizlemeAlani.innerHTML = "";
+
+            Array.from(this.files).forEach(function (dosya, index) {
+                const okuyucu = new FileReader();
+
+                okuyucu.onload = function (event) {
+                    const sutun = document.createElement("div");
+                    sutun.className = "col-6 col-md-4";
+
+                    sutun.innerHTML = `
+                        <div class="card border-0 shadow-sm h-100">
+                            <img
+                                src="${event.target.result}"
+                                alt="${dosya.name}"
+                                class="card-img-top"
+                                style="height: 180px; object-fit: cover;"
+                            >
+                            <div class="card-body p-2">
+                                <div class="small text-truncate">${dosya.name}</div>
+                                ${
+                                    index === 0
+                                        ? '<span class="badge text-bg-warning mt-2">Ana fotoğraf</span>'
+                                        : ''
+                                }
+                            </div>
+                        </div>
+                    `;
+
+                    onizlemeAlani.appendChild(sutun);
+                };
+
+                okuyucu.readAsDataURL(dosya);
+            });
+        });
+    });
+</script>
 
 {% endblock %}
