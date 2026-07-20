@@ -224,6 +224,140 @@ class Kategori(models.Model):
         return atalar
 
 
+class KategoriOzellik(models.Model):
+    VERI_TIPI_SECENEKLERI = [
+        ("SECIM", "Seçim kutusu"),
+        ("METIN", "Metin"),
+        ("SAYI", "Sayı"),
+        ("EVET_HAYIR", "Evet / Hayır"),
+    ]
+
+    kategori = models.ForeignKey(
+        Kategori,
+        on_delete=models.CASCADE,
+        related_name="ozellikler",
+        verbose_name="Kategori",
+    )
+
+    ad = models.CharField(
+        max_length=100,
+        verbose_name="Özellik adı",
+    )
+
+    veri_tipi = models.CharField(
+        max_length=20,
+        choices=VERI_TIPI_SECENEKLERI,
+        default="SECIM",
+        verbose_name="Veri tipi",
+    )
+
+    zorunlu_mu = models.BooleanField(
+        default=False,
+        verbose_name="Zorunlu mu?",
+    )
+
+    filtrelenebilir_mi = models.BooleanField(
+        default=True,
+        verbose_name="Filtrelenebilir mi?",
+        help_text=(
+            "Bu özellik ilan filtreleme alanında "
+            "gösterilsin mi?"
+        ),
+    )
+
+    aktif_mi = models.BooleanField(
+        default=True,
+        verbose_name="Aktif mi?",
+    )
+
+    sira = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Sıra",
+    )
+
+    olusturulma_tarihi = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    guncellenme_tarihi = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        verbose_name = "Kategori özelliği"
+        verbose_name_plural = "Kategori özellikleri"
+
+        ordering = [
+            "sira",
+            "ad",
+        ]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "kategori",
+                    "ad",
+                ],
+                name="benzersiz_kategori_ozelligi",
+            ),
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.kategori.tam_yol} > "
+            f"{self.ad}"
+        )
+
+
+class OzellikSecenegi(models.Model):
+    ozellik = models.ForeignKey(
+        KategoriOzellik,
+        on_delete=models.CASCADE,
+        related_name="secenekler",
+        verbose_name="Özellik",
+    )
+
+    deger = models.CharField(
+        max_length=100,
+        verbose_name="Seçenek değeri",
+    )
+
+    aktif_mi = models.BooleanField(
+        default=True,
+        verbose_name="Aktif mi?",
+    )
+
+    sira = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Sıra",
+    )
+
+    class Meta:
+        verbose_name = "Özellik seçeneği"
+        verbose_name_plural = "Özellik seçenekleri"
+
+        ordering = [
+            "sira",
+            "deger",
+        ]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "ozellik",
+                    "deger",
+                ],
+                name="benzersiz_ozellik_secenegi",
+            ),
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.ozellik.ad}: "
+            f"{self.deger}"
+        )
+
+
 class Ilan(models.Model):
     BEDEN_SECENEKLERI = [
         ("XS", "XS"),
@@ -324,9 +458,114 @@ class Ilan(models.Model):
     class Meta:
         verbose_name = "İlan"
         verbose_name_plural = "İlanlar"
+
         ordering = [
             "-olusturulma_tarihi",
         ]
 
     def __str__(self):
         return self.baslik
+
+
+class IlanOzellikDegeri(models.Model):
+    ilan = models.ForeignKey(
+        Ilan,
+        on_delete=models.CASCADE,
+        related_name="ozellik_degerleri",
+        verbose_name="İlan",
+    )
+
+    ozellik = models.ForeignKey(
+        KategoriOzellik,
+        on_delete=models.PROTECT,
+        related_name="ilan_degerleri",
+        verbose_name="Özellik",
+    )
+
+    secenek = models.ForeignKey(
+        OzellikSecenegi,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="ilan_degerleri",
+        verbose_name="Seçilen seçenek",
+    )
+
+    metin_degeri = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Girilen değer",
+    )
+
+    class Meta:
+        verbose_name = "İlan özellik değeri"
+        verbose_name_plural = "İlan özellik değerleri"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "ilan",
+                    "ozellik",
+                ],
+                name="ilanda_benzersiz_ozellik_degeri",
+            ),
+        ]
+
+    def clean(self):
+        super().clean()
+
+        if (
+            self.secenek
+            and self.secenek.ozellik_id
+            != self.ozellik_id
+        ):
+            raise ValidationError(
+                {
+                    "secenek": (
+                        "Seçilen değer bu özelliğe "
+                        "ait değildir."
+                    )
+                }
+            )
+
+        if self.ozellik.veri_tipi == "SECIM":
+            if self.secenek is None:
+                raise ValidationError(
+                    {
+                        "secenek": (
+                            "Bu özellik için bir seçenek "
+                            "seçilmelidir."
+                        )
+                    }
+                )
+
+            if self.metin_degeri:
+                raise ValidationError(
+                    {
+                        "metin_degeri": (
+                            "Seçim tipi özelliklerde ayrıca "
+                            "metin girilemez."
+                        )
+                    }
+                )
+
+        elif self.secenek is not None:
+            raise ValidationError(
+                {
+                    "secenek": (
+                        "Bu özellik seçim kutusu türünde "
+                        "değildir."
+                    )
+                }
+            )
+
+    def __str__(self):
+        if self.secenek:
+            deger = self.secenek.deger
+        else:
+            deger = self.metin_degeri
+
+        return (
+            f"{self.ilan.baslik} - "
+            f"{self.ozellik.ad}: {deger}"
+        )
