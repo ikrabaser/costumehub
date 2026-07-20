@@ -6,9 +6,16 @@ from .models import Ilan, Kategori
 @admin.register(Kategori)
 class KategoriAdmin(admin.ModelAdmin):
     list_display = (
-        "ad",
-        "slug",
+        "kategori_yolu",
+        "ust_kategori",
+        "seviye_gosterimi",
         "aktif_mi",
+        "sira",
+    )
+
+    list_filter = (
+        "aktif_mi",
+        "ust_kategori",
     )
 
     search_fields = (
@@ -16,13 +23,56 @@ class KategoriAdmin(admin.ModelAdmin):
         "slug",
     )
 
-    list_filter = (
-        "aktif_mi",
+    ordering = (
+        "ust_kategori__id",
+        "sira",
+        "ad",
     )
 
     prepopulated_fields = {
-        "slug": ("ad",),
+        "slug": (
+            "ad",
+        )
     }
+
+    autocomplete_fields = (
+        "ust_kategori",
+    )
+
+    fieldsets = (
+        (
+            "Kategori Bilgileri",
+            {
+                "fields": (
+                    "ad",
+                    "slug",
+                    "ust_kategori",
+                )
+            },
+        ),
+        (
+            "Yayın Ayarları",
+            {
+                "fields": (
+                    "aktif_mi",
+                    "sira",
+                )
+            },
+        ),
+    )
+
+    @admin.display(
+        description="Kategori yolu",
+        ordering="ad",
+    )
+    def kategori_yolu(self, nesne):
+        return nesne.tam_yol
+
+    @admin.display(
+        description="Seviye",
+    )
+    def seviye_gosterimi(self, nesne):
+        return nesne.seviye
 
 
 @admin.register(Ilan)
@@ -31,11 +81,18 @@ class IlanAdmin(admin.ModelAdmin):
         "baslik",
         "ilan_sahibi",
         "kategori",
-        "beden",
         "gunluk_fiyat",
         "sehir",
         "durum",
         "mevcut_mu",
+        "olusturulma_tarihi",
+    )
+
+    list_filter = (
+        "durum",
+        "mevcut_mu",
+        "kategori",
+        "sehir",
         "olusturulma_tarihi",
     )
 
@@ -44,21 +101,15 @@ class IlanAdmin(admin.ModelAdmin):
         "aciklama",
         "ilan_sahibi__username",
         "kategori__ad",
-        "sehir",
     )
 
-    list_filter = (
+    autocomplete_fields = (
         "kategori",
-        "beden",
-        "durum",
-        "mevcut_mu",
-        "sehir",
-        "olusturulma_tarihi",
-    )
-
-    list_select_related = (
         "ilan_sahibi",
-        "kategori",
+    )
+
+    ordering = (
+        "-olusturulma_tarihi",
     )
 
     readonly_fields = (

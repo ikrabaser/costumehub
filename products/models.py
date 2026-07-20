@@ -1,17 +1,27 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 
 
 class Kategori(models.Model):
     ad = models.CharField(
         max_length=100,
-        unique=True,
         verbose_name="Kategori adı",
     )
 
     slug = models.SlugField(
         max_length=120,
-        unique=True,
+        verbose_name="URL adı",
+    )
+
+    ust_kategori = models.ForeignKey(
+        "self",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="alt_kategoriler",
+        verbose_name="Üst kategori",
     )
 
     aktif_mi = models.BooleanField(
@@ -19,13 +29,199 @@ class Kategori(models.Model):
         verbose_name="Aktif mi?",
     )
 
+    sira = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Sıra",
+        help_text="Kategorilerin gösterim sırasını belirler.",
+    )
+
+    olusturulma_tarihi = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Oluşturulma tarihi",
+    )
+
+    guncellenme_tarihi = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Güncellenme tarihi",
+    )
+
     class Meta:
         verbose_name = "Kategori"
         verbose_name_plural = "Kategoriler"
-        ordering = ["ad"]
+
+        ordering = [
+            "sira",
+            "ad",
+        ]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "ad",
+                ],
+                condition=Q(ust_kategori__isnull=True),
+                name="benzersiz_ana_kategori_adi",
+            ),
+            models.UniqueConstraint(
+                fields=[
+                    "slug",
+                ],
+                condition=Q(ust_kategori__isnull=True),
+                name="benzersiz_ana_kategori_slug",
+            ),
+            models.UniqueConstraint(
+                fields=[
+                    "ust_kategori",
+                    "ad",
+                ],
+                condition=Q(ust_kategori__isnull=False),
+                name="benzersiz_alt_kategori_adi",
+            ),
+            models.UniqueConstraint(
+                fields=[
+                    "ust_kategori",
+                    "slug",
+                ],
+                condition=Q(ust_kategori__isnull=False),
+                name="benzersiz_alt_kategori_slug",
+            ),
+        ]
 
     def __str__(self):
-        return self.ad
+        return self.tam_yol
+
+    def clean(self):
+        super().clean()
+
+        if self.ust_kategori is None:
+            return
+
+        if self.pk and self.ust_kategori_id == self.pk:
+            raise ValidationError(
+                {
+                    "ust_kategori": (
+                        "Bir kategori kendi üst kategorisi olamaz."
+                    )
+                }
+            )
+
+        kontrol_edilen_kategori = self.ust_kategori
+        ziyaret_edilen_kategoriler = set()
+
+        while kontrol_edilen_kategori is not None:
+            if kontrol_edilen_kategori.pk in ziyaret_edilen_kategoriler:
+                raise ValidationError(
+                    {
+                        "ust_kategori": (
+                            "Kategori ağacında geçersiz bir döngü bulundu."
+                        )
+                    }
+                )
+
+            ziyaret_edilen_kategoriler.add(
+                kontrol_edilen_kategori.pk
+            )
+
+            if (
+                self.pk
+                and kontrol_edilen_kategori.pk == self.pk
+            ):
+                raise ValidationError(
+                    {
+                        "ust_kategori": (
+                            "Bu seçim kategori ağacında döngü "
+                            "oluşturur."
+                        )
+                    }
+                )
+
+            kontrol_edilen_kategori = (
+                kontrol_edilen_kategori.ust_kategori
+            )
+
+    @property
+    def tam_yol(self):
+        kategori_adlari = [
+            self.ad,
+        ]
+
+        ust_kategori = self.ust_kategori
+        ziyaret_edilenler = set()
+
+        while ust_kategori is not None:
+            if ust_kategori.pk in ziyaret_edilenler:
+                break
+
+            ziyaret_edilenler.add(
+                ust_kategori.pk
+            )
+
+            kategori_adlari.append(
+                ust_kategori.ad
+            )
+
+            ust_kategori = (
+                ust_kategori.ust_kategori
+            )
+
+        kategori_adlari.reverse()
+
+        return " > ".join(
+            kategori_adlari
+        )
+
+    @property
+    def seviye(self):
+        seviye = 0
+        ust_kategori = self.ust_kategori
+        ziyaret_edilenler = set()
+
+        while ust_kategori is not None:
+            if ust_kategori.pk in ziyaret_edilenler:
+                break
+
+            ziyaret_edilenler.add(
+                ust_kategori.pk
+            )
+
+            seviye += 1
+
+            ust_kategori = (
+                ust_kategori.ust_kategori
+            )
+
+        return seviye
+
+    @property
+    def yaprak_kategori_mi(self):
+        return not self.alt_kategoriler.filter(
+            aktif_mi=True
+        ).exists()
+
+    def atalari_getir(self):
+        atalar = []
+        ust_kategori = self.ust_kategori
+        ziyaret_edilenler = set()
+
+        while ust_kategori is not None:
+            if ust_kategori.pk in ziyaret_edilenler:
+                break
+
+            ziyaret_edilenler.add(
+                ust_kategori.pk
+            )
+
+            atalar.append(
+                ust_kategori
+            )
+
+            ust_kategori = (
+                ust_kategori.ust_kategori
+            )
+
+        atalar.reverse()
+
+        return atalar
 
 
 class Ilan(models.Model):
@@ -70,11 +266,11 @@ class Ilan(models.Model):
     )
 
     fotograf = models.ImageField(
-    upload_to="ilanlar/",
-    blank=True,
-    null=True,
-    verbose_name="İlan fotoğrafı",
-)
+        upload_to="ilanlar/",
+        blank=True,
+        null=True,
+        verbose_name="İlan fotoğrafı",
+    )
 
     beden = models.CharField(
         max_length=20,
@@ -86,7 +282,6 @@ class Ilan(models.Model):
         max_length=50,
         verbose_name="Renk",
     )
-    
 
     gunluk_fiyat = models.DecimalField(
         max_digits=10,
@@ -129,7 +324,9 @@ class Ilan(models.Model):
     class Meta:
         verbose_name = "İlan"
         verbose_name_plural = "İlanlar"
-        ordering = ["-olusturulma_tarihi"]
+        ordering = [
+            "-olusturulma_tarihi",
+        ]
 
     def __str__(self):
         return self.baslik

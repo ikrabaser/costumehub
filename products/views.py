@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 
 from rentals.models import KiralamaTalebi
 from reviews.models import Degerlendirme
@@ -15,6 +17,42 @@ from .models import Ilan, Kategori
 
 def home(request):
     return render(request, "products/home.html")
+@require_GET
+def kategori_alt_kategorileri(request, kategori_id):
+    kategori = get_object_or_404(
+        Kategori,
+        id=kategori_id,
+        aktif_mi=True,
+    )
+
+    alt_kategoriler = list(
+        kategori.alt_kategoriler.filter(
+            aktif_mi=True,
+        )
+        .order_by(
+            "sira",
+            "ad",
+        )
+        .values(
+            "id",
+            "ad",
+            "slug",
+        )
+    )
+
+    return JsonResponse(
+        {
+            "kategori": {
+                "id": kategori.id,
+                "ad": kategori.ad,
+                "tam_yol": kategori.tam_yol,
+            },
+            "alt_kategoriler": alt_kategoriler,
+            "alt_kategori_var_mi": bool(
+                alt_kategoriler
+            ),
+        }
+    )
 
 
 @login_required
@@ -35,7 +73,10 @@ def ilan_olustur(request):
                 "İlanınız başarıyla oluşturuldu.",
             )
 
-            return redirect("products:home")
+            return redirect(
+                "products:ilan_detay",
+                ilan_id=ilan.id,
+            )
 
     else:
         form = IlanFormu(
@@ -44,12 +85,69 @@ def ilan_olustur(request):
             }
         )
 
+    ana_kategoriler = list(
+    Kategori.objects.filter(
+        aktif_mi=True,
+        ust_kategori__isnull=True,
+    )
+    .order_by(
+        "sira",
+        "ad",
+    )
+    .values(
+        "id",
+        "ad",
+    )
+)
+
+    secili_kategori_yolu = []
+
+    secili_kategori_id = (
+        request.POST.get("kategori")
+        if request.method == "POST"
+        else form.initial.get("kategori")
+    )
+
+    if secili_kategori_id:
+        try:
+            secili_kategori = Kategori.objects.get(
+                id=secili_kategori_id,
+                aktif_mi=True,
+            )
+
+            kategori_yolu = [
+                *secili_kategori.atalari_getir(),
+                secili_kategori,
+            ]
+
+            secili_kategori_yolu = [
+                {
+                    "id": kategori.id,
+                    "ad": kategori.ad,
+                    "ust_kategori_id": (
+                        kategori.ust_kategori_id
+                    ),
+                }
+                for kategori in kategori_yolu
+            ]
+
+        except (
+            Kategori.DoesNotExist,
+            TypeError,
+            ValueError,
+        ):
+            secili_kategori_yolu = []
+
+    context = {
+        "form": form,
+        "ana_kategoriler": ana_kategoriler,
+        "secili_kategori_yolu": secili_kategori_yolu,
+    }
+
     return render(
         request,
         "products/ilan_olustur.html",
-        {
-            "form": form,
-        },
+        context,
     )
 
 
@@ -111,13 +209,50 @@ def ilan_listesi(request):
         except ValueError:
             pass
 
-    kategoriler = Kategori.objects.filter(
-        aktif_mi=True,
-    ).order_by("ad")
+    # Yalnızca ana kategoriler
+    ana_kategoriler = list(
+        Kategori.objects.filter(
+            aktif_mi=True,
+            ust_kategori__isnull=True,
+        )
+        .order_by(
+            "sira",
+            "ad",
+        )
+        .values(
+            "id",
+            "ad",
+        )
+    )
+
+    # Filtre uygulanmışsa seçili kategorinin
+    # ana kategoriden başlayarak yolunu oluşturur.
+    secili_kategori_yolu = []
+
+    if kategori:
+        try:
+            mevcut_kategori = Kategori.objects.get(
+                id=kategori,
+                aktif_mi=True,
+            )
+
+            while mevcut_kategori is not None:
+                secili_kategori_yolu.insert(
+                    0,
+                    mevcut_kategori.id,
+                )
+
+                mevcut_kategori = (
+                    mevcut_kategori.ust_kategori
+                )
+
+        except Kategori.DoesNotExist:
+            kategori = ""
 
     context = {
         "ilanlar": ilanlar,
-        "kategoriler": kategoriler,
+        "ana_kategoriler": ana_kategoriler,
+        "secili_kategori_yolu": secili_kategori_yolu,
         "beden_secenekleri": Ilan.BEDEN_SECENEKLERI,
         "arama": arama,
         "secili_kategori": kategori,
@@ -131,6 +266,7 @@ def ilan_listesi(request):
         "products/ilan_listesi.html",
         context,
     )
+    
 
 
 def ilan_detay(request, ilan_id):
