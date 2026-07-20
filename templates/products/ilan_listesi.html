@@ -651,4 +651,13 @@
 
 <script src="{% static 'js/kategori-secimi.js' %}"></script>
 
+
+<script>
+    window.kategoriOzellikleriUrlSablonu =
+        "{% url 'products:kategori_ozellikleri' 0 %}";
+</script>
+
+<script src="{% static 'js/ilan-filtreleri.js' %}"></script>
+
+
 {% endblock %}

@@ -372,6 +372,93 @@ def ilan_olustur(request):
             }
         )
 
+    # Seçilen kategoriye ait dinamik özellik filtreleri
+    if secili_kategori:
+        filtrelenebilir_ozellikler = [
+            ozellik
+            for ozellik in kategori_ozelliklerini_getir(
+                secili_kategori
+            )
+            if ozellik.filtrelenebilir_mi
+        ]
+
+        for ozellik in filtrelenebilir_ozellikler:
+            parametre_adi = f"ozellik_{ozellik.id}"
+
+            secili_deger = request.GET.get(
+                parametre_adi,
+                "",
+            ).strip()
+
+            if not secili_deger:
+                continue
+
+            ozellik_degerleri = (
+                IlanOzellikDegeri.objects.filter(
+                    ozellik=ozellik,
+                )
+            )
+
+            if ozellik.veri_tipi == "SECIM":
+                try:
+                    secenek_id = int(secili_deger)
+                except (TypeError, ValueError):
+                    continue
+
+                ozellik_degerleri = (
+                    ozellik_degerleri.filter(
+                        secenek_id=secenek_id,
+                    )
+                )
+
+            elif ozellik.veri_tipi == "EVET_HAYIR":
+                if secili_deger not in [
+                    "EVET",
+                    "HAYIR",
+                ]:
+                    continue
+
+                ozellik_degerleri = (
+                    ozellik_degerleri.filter(
+                        metin_degeri=secili_deger,
+                    )
+                )
+
+            elif ozellik.veri_tipi == "SAYI":
+                try:
+                    sayisal_deger = Decimal(
+                        secili_deger.replace(
+                            ",",
+                            ".",
+                        )
+                    )
+                except InvalidOperation:
+                    continue
+
+                ozellik_degerleri = (
+                    ozellik_degerleri.filter(
+                        metin_degeri=str(
+                            sayisal_deger
+                        ),
+                    )
+                )
+
+            else:
+                ozellik_degerleri = (
+                    ozellik_degerleri.filter(
+                        metin_degeri__icontains=(
+                            secili_deger
+                        ),
+                    )
+                )
+
+            ilanlar = ilanlar.filter(
+                id__in=ozellik_degerleri.values(
+                    "ilan_id"
+                )
+            )
+
+
     ana_kategoriler = list(
         Kategori.objects.filter(
             aktif_mi=True,
