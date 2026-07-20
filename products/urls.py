@@ -32,4 +32,10 @@ urlpatterns = [
         views.kategori_alt_kategorileri,
         name="kategori_alt_kategorileri",
     ),
+    path(
+    "kategoriler/<int:kategori_id>/ozellikler/",
+    views.kategori_ozellikleri,
+    name="kategori_ozellikleri",
+    ),
+    
 ]

@@ -1,18 +1,26 @@
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
+from decimal import Decimal, InvalidOperation
 
 from rentals.models import KiralamaTalebi
 from reviews.models import Degerlendirme
 from favorites.models import Favori
 
 from .forms import IlanFormu
-from .models import Ilan, Kategori
+from .models import (
+    Ilan,
+    IlanOzellikDegeri,
+    Kategori,
+    KategoriOzellik,
+    OzellikSecenegi,
+)
 
 
 def home(request):
@@ -54,6 +62,111 @@ def kategori_alt_kategorileri(request, kategori_id):
         }
     )
 
+@require_GET
+def kategori_ozellikleri(request, kategori_id):
+    kategori = get_object_or_404(
+        Kategori,
+        id=kategori_id,
+        aktif_mi=True,
+    )
+
+    kategori_yolu = [
+        *kategori.atalari_getir(),
+        kategori,
+    ]
+
+    ozellikler = []
+
+    for kategori_nesnesi in kategori_yolu:
+        kategori_ozellikleri = (
+            KategoriOzellik.objects.filter(
+                kategori=kategori_nesnesi,
+                aktif_mi=True,
+            )
+            .prefetch_related(
+                "secenekler",
+            )
+            .order_by(
+                "sira",
+                "ad",
+            )
+        )
+
+        for ozellik in kategori_ozellikleri:
+            secenekler = []
+
+            if ozellik.veri_tipi == "SECIM":
+                secenekler = list(
+                    ozellik.secenekler.filter(
+                        aktif_mi=True,
+                    )
+                    .order_by(
+                        "sira",
+                        "deger",
+                    )
+                    .values(
+                        "id",
+                        "deger",
+                    )
+                )
+
+            ozellikler.append(
+                {
+                    "id": ozellik.id,
+                    "ad": ozellik.ad,
+                    "veri_tipi": ozellik.veri_tipi,
+                    "zorunlu_mu": ozellik.zorunlu_mu,
+                    "filtrelenebilir_mi": (
+                        ozellik.filtrelenebilir_mi
+                    ),
+                    "kategori": {
+                        "id": kategori_nesnesi.id,
+                        "ad": kategori_nesnesi.ad,
+                    },
+                    "secenekler": secenekler,
+                }
+            )
+
+    return JsonResponse(
+        {
+            "kategori": {
+                "id": kategori.id,
+                "ad": kategori.ad,
+                "tam_yol": kategori.tam_yol,
+                "yaprak_kategori_mi": (
+                    kategori.yaprak_kategori_mi
+                ),
+            },
+            "ozellikler": ozellikler,
+        }
+    )
+
+
+def kategori_ozelliklerini_getir(kategori):
+    kategori_yolu = [
+        *kategori.atalari_getir(),
+        kategori,
+    ]
+
+    ozellikler = []
+
+    for kategori_nesnesi in kategori_yolu:
+        kategori_ozellikleri = (
+            KategoriOzellik.objects.filter(
+                kategori=kategori_nesnesi,
+                aktif_mi=True,
+            )
+            .order_by(
+                "sira",
+                "ad",
+            )
+        )
+
+        ozellikler.extend(
+            kategori_ozellikleri
+        )
+
+    return ozellikler
 
 @login_required
 def ilan_olustur(request):
@@ -64,19 +177,193 @@ def ilan_olustur(request):
         )
 
         if form.is_valid():
-            ilan = form.save(commit=False)
-            ilan.ilan_sahibi = request.user
-            ilan.save()
+            kategori = form.cleaned_data[
+                "kategori"
+            ]
 
-            messages.success(
-                request,
-                "İlanınız başarıyla oluşturuldu.",
+            kategori_ozellikleri = (
+                kategori_ozelliklerini_getir(
+                    kategori
+                )
             )
 
-            return redirect(
-                "products:ilan_detay",
-                ilan_id=ilan.id,
-            )
+            kaydedilecek_degerler = []
+            dinamik_alan_hatasi_var_mi = False
+
+            for ozellik in kategori_ozellikleri:
+                alan_adi = (
+                    f"ozellik_{ozellik.id}"
+                )
+
+                girilen_deger = request.POST.get(
+                    alan_adi,
+                    "",
+                ).strip()
+
+                if (
+                    ozellik.zorunlu_mu
+                    and not girilen_deger
+                ):
+                    form.add_error(
+                        None,
+                        (
+                            f'"{ozellik.ad}" alanı '
+                            "zorunludur."
+                        ),
+                    )
+
+                    dinamik_alan_hatasi_var_mi = True
+                    continue
+
+                if not girilen_deger:
+                    continue
+
+                if ozellik.veri_tipi == "SECIM":
+                    try:
+                        secenek = (
+                            OzellikSecenegi.objects.get(
+                                id=girilen_deger,
+                                ozellik=ozellik,
+                                aktif_mi=True,
+                            )
+                        )
+
+                        kaydedilecek_degerler.append(
+                            {
+                                "ozellik": ozellik,
+                                "secenek": secenek,
+                                "metin_degeri": "",
+                            }
+                        )
+
+                    except (
+                        OzellikSecenegi.DoesNotExist,
+                        TypeError,
+                        ValueError,
+                    ):
+                        form.add_error(
+                            None,
+                            (
+                                f'"{ozellik.ad}" için '
+                                "geçerli bir seçenek seçin."
+                            ),
+                        )
+
+                        dinamik_alan_hatasi_var_mi = True
+
+                elif ozellik.veri_tipi == "SAYI":
+                    try:
+                        sayisal_deger = Decimal(
+                            girilen_deger.replace(
+                                ",",
+                                ".",
+                            )
+                        )
+
+                        kaydedilecek_degerler.append(
+                            {
+                                "ozellik": ozellik,
+                                "secenek": None,
+                                "metin_degeri": str(
+                                    sayisal_deger
+                                ),
+                            }
+                        )
+
+                    except InvalidOperation:
+                        form.add_error(
+                            None,
+                            (
+                                f'"{ozellik.ad}" alanına '
+                                "geçerli bir sayı girin."
+                            ),
+                        )
+
+                        dinamik_alan_hatasi_var_mi = True
+
+                elif (
+                    ozellik.veri_tipi
+                    == "EVET_HAYIR"
+                ):
+                    if girilen_deger not in [
+                        "EVET",
+                        "HAYIR",
+                    ]:
+                        form.add_error(
+                            None,
+                            (
+                                f'"{ozellik.ad}" için '
+                                "Evet veya Hayır seçin."
+                            ),
+                        )
+
+                        dinamik_alan_hatasi_var_mi = True
+                        continue
+
+                    kaydedilecek_degerler.append(
+                        {
+                            "ozellik": ozellik,
+                            "secenek": None,
+                            "metin_degeri": (
+                                girilen_deger
+                            ),
+                        }
+                    )
+
+                else:
+                    kaydedilecek_degerler.append(
+                        {
+                            "ozellik": ozellik,
+                            "secenek": None,
+                            "metin_degeri": (
+                                girilen_deger
+                            ),
+                        }
+                    )
+
+            if not dinamik_alan_hatasi_var_mi:
+                with transaction.atomic():
+                    ilan = form.save(
+                        commit=False
+                    )
+
+                    ilan.ilan_sahibi = (
+                        request.user
+                    )
+
+                    ilan.save()
+
+                    for deger_bilgisi in (
+                        kaydedilecek_degerler
+                    ):
+                        IlanOzellikDegeri.objects.create(
+                            ilan=ilan,
+                            ozellik=(
+                                deger_bilgisi[
+                                    "ozellik"
+                                ]
+                            ),
+                            secenek=(
+                                deger_bilgisi[
+                                    "secenek"
+                                ]
+                            ),
+                            metin_degeri=(
+                                deger_bilgisi[
+                                    "metin_degeri"
+                                ]
+                            ),
+                        )
+
+                messages.success(
+                    request,
+                    "İlanınız başarıyla oluşturuldu.",
+                )
+
+                return redirect(
+                    "products:ilan_detay",
+                    ilan_id=ilan.id,
+                )
 
     else:
         form = IlanFormu(
@@ -86,19 +373,19 @@ def ilan_olustur(request):
         )
 
     ana_kategoriler = list(
-    Kategori.objects.filter(
-        aktif_mi=True,
-        ust_kategori__isnull=True,
+        Kategori.objects.filter(
+            aktif_mi=True,
+            ust_kategori__isnull=True,
+        )
+        .order_by(
+            "sira",
+            "ad",
+        )
+        .values(
+            "id",
+            "ad",
+        )
     )
-    .order_by(
-        "sira",
-        "ad",
-    )
-    .values(
-        "id",
-        "ad",
-    )
-)
 
     secili_kategori_yolu = []
 
@@ -141,7 +428,9 @@ def ilan_olustur(request):
     context = {
         "form": form,
         "ana_kategoriler": ana_kategoriler,
-        "secili_kategori_yolu": secili_kategori_yolu,
+        "secili_kategori_yolu": (
+            secili_kategori_yolu
+        ),
     }
 
     return render(
@@ -405,6 +694,19 @@ def ilan_detay(request, ilan_id):
         degerlendirmeler.count()
     )
     
+    ozellik_degerleri = (
+    IlanOzellikDegeri.objects
+    .filter(ilan=ilan)
+    .select_related(
+        "ozellik",
+        "secenek",
+    )
+    .order_by(
+        "ozellik__sira",
+        "ozellik__ad",
+    )
+)
+
 
     context = {
         "ilan": ilan,
@@ -414,6 +716,7 @@ def ilan_detay(request, ilan_id):
         "ortalama_puan": ortalama_puan,
         "degerlendirme_sayisi": degerlendirme_sayisi,
         "favoride_mi": favoride_mi,
+        "ozellik_degerleri": ozellik_degerleri,
     }
 
     return render(

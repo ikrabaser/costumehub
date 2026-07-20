@@ -20,18 +20,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const altKategoriUrlSablonu =
         window.altKategoriUrlSablonu || "";
 
-    /*
-        "ilan" modunda yalnızca en alt kategori seçildiğinde
-        gizli input doldurulur.
-
-        "filtre" modunda ana kategori veya herhangi bir
-        alt kategori seçildiğinde gizli input doldurulur.
-    */
     const kategoriSecimModu =
         window.kategoriSecimModu || "ilan";
 
     const filtreModuMu =
         kategoriSecimModu === "filtre";
+
+
+    function kategoriDegistiOlayiGonder(
+        kategoriId,
+        yaprakKategoriMi
+    ) {
+        document.dispatchEvent(
+            new CustomEvent(
+                "kategoriDegisti",
+                {
+                    detail: {
+                        kategoriId:
+                            kategoriId || "",
+                        yaprakKategoriMi:
+                            yaprakKategoriMi,
+                    },
+                }
+            )
+        );
+    }
 
 
     function kategoriUrlOlustur(kategoriId) {
@@ -142,6 +155,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     mevcutSeviye
                 );
 
+                kategoriDegistiOlayiGonder(
+                    "",
+                    false
+                );
+
                 if (!secilenKategoriId) {
                     if (filtreModuMu) {
                         gizliKategoriInput.value =
@@ -154,17 +172,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 if (filtreModuMu) {
-                    /*
-                        Filtreleme sayfasında ana kategori
-                        seçimi de geçerli kabul edilir.
-                    */
                     gizliKategoriInput.value =
                         secilenKategoriId;
                 } else {
-                    /*
-                        İlan oluşturma sayfasında önce alt
-                        kategori olup olmadığı kontrol edilir.
-                    */
                     gizliKategoriInput.value = "";
                 }
 
@@ -253,16 +263,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     sonrakiSeviye
                 );
 
-                /*
-                    İlan oluşturma ekranında kullanıcıdan
-                    daha alt kategoriyi seçmesini bekliyoruz.
-                */
                 if (!filtreModuMu) {
                     gizliKategoriInput.value = "";
                 }
+
+                kategoriDegistiOlayiGonder(
+                    "",
+                    false
+                );
             } else {
                 gizliKategoriInput.value =
                     kategoriId;
+
+                kategoriDegistiOlayiGonder(
+                    kategoriId,
+                    true
+                );
             }
         } catch (hata) {
             console.error(hata);
@@ -347,9 +363,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     gizliKategoriInput.value = "";
                 }
+
+                kategoriDegistiOlayiGonder(
+                    "",
+                    false
+                );
             } else {
                 gizliKategoriInput.value =
                     sonKategori.id;
+
+                kategoriDegistiOlayiGonder(
+                    sonKategori.id,
+                    true
+                );
             }
         } catch (hata) {
             console.error(hata);
