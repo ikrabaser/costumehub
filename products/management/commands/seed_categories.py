@@ -31,6 +31,92 @@ KATEGORI_AGACI = {
             "Fantastik Kostümler",
         ],
     },
+
+    "Özel Gün Kıyafetleri": {
+        "Düğün": [
+            "Gelinlik",
+            "Damatlık",
+            "Nişanlık",
+            "Kına Elbisesi",
+            "Nedime Elbisesi",
+        ],
+        "Abiye": [
+            "Uzun Abiye",
+            "Kısa Abiye",
+            "Saten Abiye",
+            "Payetli Abiye",
+            "Tesettür Abiye",
+        ],
+        "Mezuniyet": [
+            "Kadın Mezuniyet Kıyafetleri",
+            "Erkek Mezuniyet Kıyafetleri",
+        ],
+    },
+
+    "Cosplay": {
+        "Anime": [
+            "Shounen",
+            "Fantastik Anime",
+            "Bilim Kurgu Anime",
+        ],
+        "Çizgi Roman": [
+            "Marvel",
+            "DC",
+            "Bağımsız Çizgi Roman",
+        ],
+        "Oyun Karakterleri": [
+            "Aksiyon Oyunları",
+            "Rol Yapma Oyunları",
+            "Korku Oyunları",
+        ],
+        "Film ve Dizi": [
+            "Bilim Kurgu",
+            "Fantastik",
+            "Korku",
+            "Macera",
+        ],
+    },
+
+    "Tiyatro Kostümleri": {
+        "Oyun Türü": [
+            "Klasik Tiyatro",
+            "Modern Tiyatro",
+            "Çocuk Oyunu",
+            "Müzikal",
+        ],
+        "Karakter Türü": [
+            "Tarihî Karakter",
+            "Fantastik Karakter",
+            "Komedi Karakteri",
+            "Dram Karakteri",
+        ],
+    },
+
+    "Aksesuarlar": {
+        "Baş Aksesuarları": [
+            "Maske",
+            "Peruk",
+            "Şapka",
+            "Taç",
+        ],
+        "El ve Kol Aksesuarları": [
+            "Eldiven",
+            "Bileklik",
+            "Kalkan",
+            "Asa",
+        ],
+        "Kostüm Tamamlayıcıları": [
+            "Kanat",
+            "Kılıç",
+            "Kemer",
+            "Takı",
+        ],
+        "Ayakkabı ve Çanta": [
+            "Ayakkabı",
+            "Bot",
+            "Çanta",
+        ],
+    },
 }
 
 
