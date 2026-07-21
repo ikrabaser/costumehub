@@ -35,3 +35,8 @@ media/
 
 .DS_Store
 Thumbs.db
+staticfiles/
+__pycache__/
+*.pyc
+.env 
+
