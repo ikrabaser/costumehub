@@ -720,18 +720,22 @@ def ilan_detay(request, ilan_id):
     )
     
     ozellik_degerleri = (
-    IlanOzellikDegeri.objects
-    .filter(ilan=ilan)
-    .select_related(
-        "ozellik",
-        "secenek",
+        IlanOzellikDegeri.objects
+        .filter(ilan=ilan)
+        .select_related(
+            "ozellik",
+            "secenek",
+        )
+        .order_by(
+            "ozellik__sira",
+            "ozellik__ad",
+        )
     )
-    .order_by(
-        "ozellik__sira",
-        "ozellik__ad",
-    )
-)
 
+    kategori_yolu = [
+        *ilan.kategori.atalari_getir(),
+        ilan.kategori,
+    ]
 
     context = {
         "ilan": ilan,
@@ -742,8 +746,8 @@ def ilan_detay(request, ilan_id):
         "degerlendirme_sayisi": degerlendirme_sayisi,
         "favoride_mi": favoride_mi,
         "ozellik_degerleri": ozellik_degerleri,
+        "kategori_yolu": kategori_yolu,
     }
-
     return render(
         request,
         "products/ilan_detay.html",
