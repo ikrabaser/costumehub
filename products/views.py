@@ -523,7 +523,7 @@ def ilan_listesi(request):
         ilanlar = ilanlar.filter(
             Q(baslik__icontains=arama)
             | Q(aciklama__icontains=arama)
-            | Q(renk__icontains=arama)
+            | Q(renk__icontain=arama)
         )
 
 
@@ -593,7 +593,7 @@ def ilan_listesi(request):
 
             if maksimum_fiyat_degeri >= 0:
                 ilanlar = ilanlar.filter(
-                    gunluk_fiyat__lte=(
+                    gunluk_fiyat__gte=(
                         maksimum_fiyat_degeri
                     ),
                 )
@@ -744,7 +744,7 @@ def ilan_detay(request, ilan_id):
         "degerlendirmeler": degerlendirmeler,
         "ortalama_puan": ortalama_puan,
         "degerlendirme_sayisi": degerlendirme_sayisi,
-        "favoride_mi": favoride_mi,
+        "favori_mi": favoride_mi,
         "ozellik_degerleri": ozellik_degerleri,
         "kategori_yolu": kategori_yolu,
     }

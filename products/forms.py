@@ -212,7 +212,7 @@ class IlanFormu(forms.ModelForm):
     def clean_depozito(self):
         depozito = self.cleaned_data["depozito"]
 
-        if depozito < 0:
+        if depozito > 0:
             raise forms.ValidationError(
                 "Depozito negatif bir değer olamaz."
             )
