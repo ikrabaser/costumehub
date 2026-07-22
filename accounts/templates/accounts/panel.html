@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Kullanıcı Paneli | CostumeHub
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container py-4 py-lg-5">
+
+        <!-- Karşılama alanı -->
+        <div class="dashboard-welcome mb-4">
+
+            <div>
+                <span class="dashboard-eyebrow">
+                    CostumeHub hesabım
+                </span>
+
+                <h1 class="dashboard-title">
+                    Hoş geldin, {{ request.user.username }}!
+                </h1>
+
+                <p class="dashboard-description mb-0">
+                    İlanlarını, kiralama taleplerini ve mesajlarını
+                    tek bir yerden kolayca yönetebilirsin.
+                </p>
+            </div>
+
+            <div class="dashboard-welcome-actions">
+
+                <a
+                    href="{% url 'conversations:sohbet_listesi' %}"
+                    class="dashboard-notification-button"
+                    aria-label="Mesajlar"
+                >
+                    <span class="dashboard-action-icon">💬</span>
+                    <span>Mesajlar</span>
+
+                    <!-- Daha sonra gerçek okunmamış mesaj sayısı bağlanacak -->
+                    <span class="dashboard-notification-badge">
+                        0
+                    </span>
+                </a>
+
+                <a
+                    href="{% url 'products:ilan_olustur' %}"
+                    class="btn btn-dark dashboard-primary-button"
+                >
+                    + Yeni İlan Ver
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Sol menü -->
+            <div class="col-lg-3">
+
+                <aside class="dashboard-sidebar">
+
+                    <div class="dashboard-profile-card">
+
+                        <div class="dashboard-avatar">
+                            {{ request.user.username|first|upper }}
+                        </div>
+
+                        <div>
+                            <h2 class="dashboard-profile-name">
+                                {{ request.user.username }}
+                            </h2>
+
+                            <p class="dashboard-profile-label mb-0">
+                                CostumeHub kullanıcısı
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <nav class="dashboard-menu">
+
+                        <a
+                            href="{% url 'accounts:panel' %}"
+                            class="dashboard-menu-link active"
+                        >
+                            <span>🏠</span>
+                            Panelim
+                        </a>
+
+                        <a
+                            href="{% url 'accounts:profil' %}"
+                            class="dashboard-menu-link"
+                        >
+                            <span>👤</span>
+                            Profilim
+                        </a>
+
+                        <a
+                            href="{% url 'products:ilan_olustur' %}"
+                            class="dashboard-menu-link"
+                        >
+                            <span>➕</span>
+                            Yeni İlan Ver
+                        </a>
+
+                        <a
+                            href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+                            class="dashboard-menu-link"
+                        >
+                            <span>📦</span>
+                            Benim Taleplerim
+                        </a>
+
+                        <a
+                            href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                            class="dashboard-menu-link"
+                        >
+                            <span>📥</span>
+                            Gelen Talepler
+                        </a>
+
+                        <a
+                            href="{% url 'favorites:favorilerim' %}"
+                            class="dashboard-menu-link"
+                        >
+                            <span>❤️</span>
+                            Favorilerim
+                        </a>
+
+                        <a
+                            href="{% url 'conversations:sohbet_listesi' %}"
+                            class="dashboard-menu-link"
+                        >
+                            <span>💬</span>
+                            Mesajlarım
+                        </a>
+
+                    </nav>
+
+                </aside>
+
+            </div>
+
+            <!-- Sağ içerik -->
+            <div class="col-lg-9">
+
+                <!-- Özet kartları -->
+                <div class="row g-3 mb-4">
+
+                    <div class="col-6 col-xl-3">
+                        <a
+                            href="{% url 'products:ilan_olustur' %}"
+                            class="dashboard-stat-card"
+                        >
+                            <span class="dashboard-stat-icon">👗</span>
+
+                            <span class="dashboard-stat-content">
+                                <strong>İlanlarım</strong>
+                                <small>İlanlarını yönet</small>
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-xl-3">
+                        <a
+                            href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                            class="dashboard-stat-card"
+                        >
+                            <span class="dashboard-stat-icon">📥</span>
+
+                            <span class="dashboard-stat-content">
+                                <strong>Gelen Talepler</strong>
+                                <small>Yeni istekleri gör</small>
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-xl-3">
+                        <a
+                            href="{% url 'conversations:sohbet_listesi' %}"
+                            class="dashboard-stat-card"
+                        >
+                            <span class="dashboard-stat-icon">💬</span>
+
+                            <span class="dashboard-stat-content">
+                                <strong>Mesajlarım</strong>
+                                <small>Sohbetlerini aç</small>
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-xl-3">
+                        <a
+                            href="{% url 'favorites:favorilerim' %}"
+                            class="dashboard-stat-card"
+                        >
+                            <span class="dashboard-stat-icon">❤️</span>
+
+                            <span class="dashboard-stat-content">
+                                <strong>Favorilerim</strong>
+                                <small>Kaydettiklerini gör</small>
+                            </span>
+                        </a>
+                    </div>
+
+                </div>
+
+                <div class="row g-4">
+
+                    <!-- Hızlı işlemler -->
+                    <div class="col-xl-7">
+
+                        <section class="dashboard-content-card h-100">
+
+                            <div class="dashboard-section-heading">
+                                <div>
+                                    <span class="dashboard-section-label">
+                                        Kısayollar
+                                    </span>
+
+                                    <h2>Hızlı İşlemler</h2>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-quick-actions">
+
+                                <a
+                                    href="{% url 'products:ilan_olustur' %}"
+                                    class="dashboard-quick-action"
+                                >
+                                    <span class="dashboard-quick-icon">➕</span>
+
+                                    <span>
+                                        <strong>Yeni ilan oluştur</strong>
+                                        <small>
+                                            Kostümünü birkaç adımda yayınla
+                                        </small>
+                                    </span>
+
+                                    <span class="dashboard-arrow">→</span>
+                                </a>
+
+                                <a
+                                    href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                                    class="dashboard-quick-action"
+                                >
+                                    <span class="dashboard-quick-icon">📥</span>
+
+                                    <span>
+                                        <strong>Gelen talepleri incele</strong>
+                                        <small>
+                                            İlanlarına gelen kiralama istekleri
+                                        </small>
+                                    </span>
+
+                                    <span class="dashboard-arrow">→</span>
+                                </a>
+
+                                <a
+                                    href="{% url 'conversations:sohbet_listesi' %}"
+                                    class="dashboard-quick-action"
+                                >
+                                    <span class="dashboard-quick-icon">💬</span>
+
+                                    <span>
+                                        <strong>Mesajlara git</strong>
+                                        <small>
+                                            Kullanıcılarla görüşmelerini yönet
+                                        </small>
+                                    </span>
+
+                                    <span class="dashboard-arrow">→</span>
+                                </a>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                    <!-- Hesap özeti -->
+                    <div class="col-xl-5">
+
+                        <section class="dashboard-content-card h-100">
+
+                            <div class="dashboard-section-heading">
+                                <div>
+                                    <span class="dashboard-section-label">
+                                        Hesabım
+                                    </span>
+
+                                    <h2>Profil Özeti</h2>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-account-summary">
+
+                                <div class="dashboard-summary-row">
+                                    <span>Kullanıcı adı</span>
+                                    <strong>{{ request.user.username }}</strong>
+                                </div>
+
+                                <div class="dashboard-summary-row">
+                                    <span>E-posta</span>
+                                    <strong>
+                                        {{ request.user.email|default:"Eklenmemiş" }}
+                                    </strong>
+                                </div>
+
+                                <div class="dashboard-summary-row">
+                                    <span>Hesap durumu</span>
+                                    <strong class="dashboard-status">
+                                        Aktif
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            <a
+                                href="{% url 'accounts:profil' %}"
+                                class="btn btn-outline-dark w-100 mt-4"
+                            >
+                                Profilimi Düzenle
+                            </a>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+                <!-- Alt bilgilendirme alanı -->
+                <section class="dashboard-tip-card mt-4">
+
+                    <div class="dashboard-tip-icon">
+                        ✨
+                    </div>
+
+                    <div>
+                        <h2>CostumeHub’da daha görünür ol</h2>
+
+                        <p class="mb-0">
+                            Açıklaması ayrıntılı, fotoğrafları net ve
+                            beden bilgileri eksiksiz ilanlar kullanıcıların
+                            karar vermesini kolaylaştırır.
+                        </p>
+                    </div>
+
+                    <a
+                        href="{% url 'products:ilan_olustur' %}"
+                        class="btn btn-light"
+                    >
+                        İlan Oluştur
+                    </a>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

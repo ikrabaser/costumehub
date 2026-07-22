@@ -8,7 +8,7 @@ from .forms import GirisFormu, KayitFormu, ProfilFormu
 
 def kayit(request):
     if request.user.is_authenticated:
-        return redirect("products:home")
+        return redirect("accounts:panel")
 
     if request.method == "POST":
         form = KayitFormu(request.POST)
@@ -22,7 +22,7 @@ def kayit(request):
                 "Hesabınız başarıyla oluşturuldu. CostumeHub'a hoş geldiniz!",
             )
 
-            return redirect("products:home")
+            return redirect("accounts:panel")
     else:
         form = KayitFormu()
 
@@ -37,7 +37,7 @@ def kayit(request):
 
 def giris(request):
     if request.user.is_authenticated:
-        return redirect("products:home")
+        return redirect("accounts:panel")
 
     if request.method == "POST":
         form = GirisFormu(request, data=request.POST)
@@ -51,7 +51,7 @@ def giris(request):
                 f"Hoş geldiniz, {kullanici.username}!",
             )
 
-            return redirect("products:home")
+            return redirect("accounts:panel")
     else:
         form = GirisFormu()
 
@@ -104,4 +104,10 @@ def profil(request):
             "profil": profil_nesnesi,
             "form": form,
         },
+    )
+@login_required
+def panel(request):
+    return render(
+        request,
+        "accounts/panel.html",
     )

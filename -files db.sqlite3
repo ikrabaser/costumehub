@@ -1,0 +1,179 @@
+[33mcommit 20f21c256b63a340a99735b56452cf81444dc09c[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Tue Jul 21 08:39:21 2026 +0300
+
+    added future
+
+ db.sqlite3 | Bin [31m339968[m -> [32m339968[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit e10d0ad5b03c37e82785a106ce4f4e22a2d8fe9c[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Mon Jul 20 22:07:45 2026 +0300
+
+    Add multiple image upload and listing gallery
+
+ db.sqlite3 | Bin [31m335872[m -> [32m339968[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit c85654406d20a6386a6d4c9cc80c780a690d1c10[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Mon Jul 20 15:23:28 2026 +0300
+
+    Add dynamic category attributes
+
+ db.sqlite3 | Bin [31m335872[m -> [32m335872[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 6c9f148b22db6607e1f469b448b26095c7045010[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Mon Jul 20 14:29:36 2026 +0300
+
+    Add dynamic category attribute management
+
+ db.sqlite3 | Bin [31m282624[m -> [32m335872[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 74eaeae761b5211041608281b6ff85d070d97948[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Mon Jul 20 13:14:41 2026 +0300
+
+    Add hierarchical category selection
+
+ db.sqlite3 | Bin [31m249856[m -> [32m282624[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit e1ddcdcabba86702c3df3fdade0714a48712f656[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Mon Jul 20 10:17:36 2026 +0300
+
+    Add favorites system
+
+ db.sqlite3 | Bin [31m229376[m -> [32m249856[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 991cd15e7f26479c80a9018a6ea92ac02a5271ab[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 23:14:56 2026 +0300
+
+    Add review and rating system
+
+ db.sqlite3 | Bin [31m212992[m -> [32m229376[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 8d00ecc46f836404fa4f2a21a92aa8fb99aec907[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 21:01:31 2026 +0300
+
+    Add listing-based messaging system
+
+ db.sqlite3 | Bin [31m180224[m -> [32m212992[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 4a6b4f52d9be86be765b7fa3c4d0a4c760f830c9[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 20:24:06 2026 +0300
+
+    Improve rental request confirmation flow
+
+ db.sqlite3 | Bin [31m180224[m -> [32m180224[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 4a0dfad05583dc557fde697c9092d2034e282aa6[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 17:23:49 2026 +0300
+
+    Add interactive rental date selection
+
+ db.sqlite3 | Bin [31m180224[m -> [32m180224[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 026bb6d6742959c7b88952b4d6168a927484520a[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 15:40:45 2026 +0300
+
+    Add rental workflow status management
+
+ db.sqlite3 | Bin [31m180224[m -> [32m180224[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 812549523045b9cd282c847ec6cd8f60f73b2b7f[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 14:55:17 2026 +0300
+
+    Add rental date conflict validation
+
+ db.sqlite3 | Bin [31m180224[m -> [32m180224[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 02cba8ad648c67245f13588500ab7474d3703764[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 14:41:30 2026 +0300
+
+    Add user rental request history
+
+ db.sqlite3 | Bin [31m180224[m -> [32m180224[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 219bbef721ede260042b707ac1c483e3acf821c3[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 01:53:55 2026 +0300
+
+    Add rental request management for listing owners
+
+ db.sqlite3 | Bin [31m180224[m -> [32m180224[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 722d6cdb14ee31839e32b32dddcc82d947f087a1[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Sun Jul 19 01:08:03 2026 +0300
+
+    Add rental request creation workflow
+
+ db.sqlite3 | Bin [31m163840[m -> [32m180224[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 6d4d41d6b8329a78abe62c3d333c3bfc144ad6e1[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Fri Jul 17 17:47:16 2026 +0300
+
+    Add product image upload support
+
+ db.sqlite3 | Bin [31m163840[m -> [32m163840[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 0aeb60a262c44563ee9d19f08df990c97d5b683d[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Fri Jul 17 16:59:08 2026 +0300
+
+    Add product listing creation feature
+
+ db.sqlite3 | Bin [31m139264[m -> [32m163840[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 3939e98867a865fbd813406d6f50f7f3e3309d8a[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Fri Jul 17 16:24:16 2026 +0300
+
+    Add user profile management
+
+ db.sqlite3 | Bin [31m131072[m -> [32m139264[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit f555bb20e89860be9c3a0a33182b30621923d08f[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Fri Jul 17 16:05:15 2026 +0300
+
+    Implement custom authentication interface
+
+ db.sqlite3 | Bin [31m131072[m -> [32m131072[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit d42093e2d1257325410d7e527d03a78f83607db0[m
+Author: İkra Başer <ikkraa2004@gmail.com>
+Date:   Fri Jul 17 15:43:32 2026 +0300
+
+    Initial CostumeHub project setup
+
+ db.sqlite3 | Bin [31m0[m -> [32m131072[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)

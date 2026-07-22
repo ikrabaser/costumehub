@@ -10,5 +10,5 @@ services:
       - ./staticfiles:/app/staticfiles
       - ./media:/app/media
     environment:
-      DJANGO_DEBUG: "True"
+      DJANGO_DEBUG: "False"
       DJANGO_ALLOWED_HOSTS: "2.28.4.211,localhost,127.0.0.1"
