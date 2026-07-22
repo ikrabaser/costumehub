@@ -1,0 +1,61 @@
+<header class="costume-topbar">
+
+    <div class="costume-topbar-title">
+
+        <span class="costume-topbar-eyebrow">
+            CostumeHub
+        </span>
+
+        <h1>
+    {% if request.resolver_match.url_name == "panel" %}
+        Kullanıcı Paneli
+
+    {% elif request.resolver_match.url_name == "profil" %}
+        Profilim
+
+    {% elif request.resolver_match.url_name == "ilan_listesi" %}
+        Kostümler
+
+    {% elif request.resolver_match.url_name == "ilan_olustur" %}
+        Yeni İlan Ver
+
+    {% elif request.resolver_match.url_name == "favorilerim" %}
+        Favorilerim
+
+    {% elif request.resolver_match.url_name == "benim_kiralama_taleplerim" %}
+        Benim Taleplerim
+
+    {% elif request.resolver_match.url_name == "gelen_kiralama_talepleri" %}
+        Gelen Talepler
+
+    {% elif request.resolver_match.url_name == "sohbet_listesi" %}
+        Mesajlarım
+
+    {% else %}
+        Hesabım
+    {% endif %}
+</h1>
+
+    </div>
+
+    <div class="costume-topbar-actions">
+
+        <a
+            href="{% url 'conversations:sohbet_listesi' %}"
+            class="costume-topbar-button"
+        >
+            <span>💬</span>
+            <span>Mesajlar</span>
+            <span class="costume-topbar-badge">0</span>
+        </a>
+
+        <a
+            href="{% url 'products:ilan_olustur' %}"
+            class="btn btn-dark costume-topbar-primary"
+        >
+            + Yeni İlan Ver
+        </a>
+
+    </div>
+
+</header>
