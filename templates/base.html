@@ -31,9 +31,13 @@
 
 </head>
 
-<body class="{% if user.is_authenticated %}costume-app-layout{% endif %}">
+<body class="
+    {% if user.is_authenticated and request.resolver_match.url_name != 'home' %}
+        costume-app-layout
+    {% endif %}
+">
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and request.resolver_match.url_name != "home" %}
 
     {% include "partials/sidebar.html" %}
 
@@ -47,7 +51,11 @@
 
 {% endif %}
 
-<div class="{% if user.is_authenticated %}costume-app-content{% endif %}">
+<div class="
+    {% if user.is_authenticated and request.resolver_match.url_name != 'home' %}
+        costume-app-content
+    {% endif %}
+">
 
 <main>
 

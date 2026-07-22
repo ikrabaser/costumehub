@@ -272,61 +272,7 @@
                 <span class="costume-sidebar-icon">🎭</span>
                 Kostümler
             </a>
-            <div class="costume-sidebar-categories">
-
-    <button
-        type="button"
-        class="costume-sidebar-link costume-category-toggle"
-        data-bs-toggle="collapse"
-        data-bs-target="#sidebarKategoriler"
-        aria-expanded="false"
-        aria-controls="sidebarKategoriler"
-    >
-        <span class="costume-sidebar-icon">▦</span>
-
-        <span class="flex-grow-1 text-start">
-            Kategoriler
-        </span>
-
-        <span class="costume-category-arrow">
-            ›
-        </span>
-    </button>
-
-    <div
-        class="collapse"
-        id="sidebarKategoriler"
-    >
-        <div class="costume-category-list">
-
-            {% for kategori in navbar_ana_kategoriler %}
-
-                <a
-                    href="{% url 'products:ilan_listesi' %}?kategori={{ kategori.id }}"
-                    class="costume-category-link"
-                >
-                    <span>
-                        {{ kategori.ad }}
-                    </span>
-
-                    <span>
-                        ›
-                    </span>
-                </a>
-
-            {% empty %}
-
-                <span class="costume-category-empty">
-                    Henüz kategori bulunmuyor.
-                </span>
-
-            {% endfor %}
-
-        </div>
-    </div>
-
-</div>
-
+            
             <a
                 href="{% url 'accounts:panel' %}"
                 class="costume-sidebar-link"
