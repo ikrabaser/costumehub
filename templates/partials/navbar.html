@@ -1,7 +1,10 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark costume-navbar">
     <div class="container">
 
-        <a class="navbar-brand fw-bold" href="{% url 'products:home' %}">
+        <a
+            class="navbar-brand fw-bold"
+            href="{% url 'products:home' %}"
+        >
             CostumeHub
         </a>
 
@@ -19,7 +22,8 @@
 
         <div class="collapse navbar-collapse" id="anaMenu">
 
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- Genel bağlantılar -->
+            <ul class="navbar-nav me-auto mb-3 mb-xl-0">
 
                 <li class="nav-item">
                     <a
@@ -50,90 +54,178 @@
 
             </ul>
 
-            <div class="d-flex align-items-center gap-2">
+            {% if user.is_authenticated %}
 
-                {% if user.is_authenticated %}
+                <!-- Kullanıcı bağlantıları -->
+                <ul class="navbar-nav align-items-xl-center gap-xl-1">
 
-                    <span class="navbar-text text-light me-2">
-                        Hoş geldin, {{ user.username }}
-                    </span>
-
-                    <a
-                        href="{% url 'accounts:profil' %}"
-                        class="btn btn-outline-light btn-sm"
-                    >
-                        Profilim
-                    </a>
-
-                    <a
-    href="{% url 'favorites:favorilerim' %}"
-    class="btn btn-outline-light btn-sm"
->
-    Favorilerim
-</a>
-
-                    <a
-                        href="{% url 'rentals:benim_kiralama_taleplerim' %}"
-                        class="btn btn-outline-light btn-sm"
-                    >
-                        Benim Taleplerim
-                    </a>
-
-                    <a
-                        href="{% url 'rentals:gelen_kiralama_talepleri' %}"
-                        class="btn btn-outline-light btn-sm"
-                    >
-                        Gelen Talepler
-                    </a>
-
-                    <a
-    href="{% url 'conversations:sohbet_listesi' %}"
-    class="btn btn-outline-light btn-sm"
->
-    Mesajlar
-</a>
-
-                    <a
-                        href="{% url 'products:ilan_olustur' %}"
-                        class="btn btn-outline-light btn-sm"
-                    >
-                        İlan Ver
-                    </a>
-
-                    <form
-                        method="POST"
-                        action="{% url 'accounts:cikis' %}"
-                        class="d-inline"
-                    >
-                        {% csrf_token %}
-
-                        <button
-                            type="submit"
-                            class="btn btn-warning btn-sm"
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="{% url 'accounts:panel' %}"
                         >
-                            Çıkış Yap
-                        </button>
-                    </form>
+                            Panelim
+                        </a>
+                    </li>
 
-                {% else %}
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="{% url 'favorites:favorilerim' %}"
+                        >
+                            Favorilerim
+                        </a>
+                    </li>
+
+                    <!-- Talepler dropdown -->
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="taleplerMenu"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            Talepler
+                        </a>
+
+                        <ul
+                            class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="taleplerMenu"
+                        >
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+                                >
+                                    Benim Taleplerim
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                                >
+                                    Gelen Talepler
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link navbar-message-link"
+                            href="{% url 'conversations:sohbet_listesi' %}"
+                        >
+                            Mesajlar
+
+                            <span class="navbar-badge">
+                                0
+                            </span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item ms-xl-2">
+                        <a
+                            href="{% url 'products:ilan_olustur' %}"
+                            class="btn btn-warning navbar-action-button"
+                        >
+                            İlan Ver
+                        </a>
+                    </li>
+
+                    <!-- Profil dropdown -->
+                    <li class="nav-item dropdown ms-xl-1">
+
+                        <a
+                            class="nav-link dropdown-toggle navbar-profile-link"
+                            href="#"
+                            id="profilMenu"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <span class="navbar-avatar">
+                                {{ user.username|first|upper }}
+                            </span>
+
+                            <span class="navbar-username">
+                                {{ user.username }}
+                            </span>
+                        </a>
+
+                        <ul
+                            class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="profilMenu"
+                        >
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'accounts:panel' %}"
+                                >
+                                    Kullanıcı Paneli
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'accounts:profil' %}"
+                                >
+                                    Profilim
+                                </a>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <form
+                                    method="POST"
+                                    action="{% url 'accounts:cikis' %}"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="dropdown-item text-danger"
+                                    >
+                                        Çıkış Yap
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+
+                    </li>
+
+                </ul>
+
+            {% else %}
+
+                <div class="d-flex flex-column flex-xl-row gap-2">
 
                     <a
                         href="{% url 'accounts:giris' %}"
-                        class="btn btn-outline-light btn-sm"
+                        class="btn btn-outline-light"
                     >
                         Giriş Yap
                     </a>
 
                     <a
                         href="{% url 'accounts:kayit' %}"
-                        class="btn btn-warning btn-sm"
+                        class="btn btn-warning"
                     >
                         Kayıt Ol
                     </a>
 
-                {% endif %}
+                </div>
 
-            </div>
+            {% endif %}
 
         </div>
 
