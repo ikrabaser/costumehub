@@ -1,0 +1,424 @@
+<!-- Masaüstü sabit sidebar -->
+<aside class="costume-sidebar d-none d-lg-flex">
+
+    <div class="costume-sidebar-header">
+
+        <a
+            href="{% url 'products:home' %}"
+            class="costume-sidebar-brand"
+        >
+            <span class="costume-sidebar-logo">
+                🎭
+            </span>
+
+            <span>CostumeHub</span>
+        </a>
+
+    </div>
+
+    <div class="costume-sidebar-body">
+
+        <nav class="costume-sidebar-menu">
+
+            <a
+                href="{% url 'products:home' %}"
+                class="costume-sidebar-link
+                {% if request.resolver_match.url_name == 'home' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">⌂</span>
+                <span>Ana Sayfa</span>
+            </a>
+
+            <a
+                href="{% url 'products:ilan_listesi' %}"
+                class="costume-sidebar-link
+                {% if request.resolver_match.url_name == 'ilan_listesi' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">🎭</span>
+                <span>Kostümler</span>
+            </a>
+
+            <a
+                href="{% url 'accounts:panel' %}"
+                class="costume-sidebar-link
+                {% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name == 'panel' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">▦</span>
+                <span>Panelim</span>
+            </a>
+
+            <a
+                href="{% url 'products:ilan_olustur' %}"
+                class="costume-sidebar-link costume-sidebar-primary
+                {% if request.resolver_match.url_name == 'ilan_olustur' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">＋</span>
+                <span>Yeni İlan Ver</span>
+            </a>
+
+            <div class="costume-sidebar-divider"></div>
+
+            <a
+                href="{% url 'favorites:favorilerim' %}"
+                class="costume-sidebar-link
+                {% if request.resolver_match.namespace == 'favorites' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">♡</span>
+                <span>Favorilerim</span>
+            </a>
+
+            <a
+                href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+                class="costume-sidebar-link
+                {% if request.resolver_match.url_name == 'benim_kiralama_taleplerim' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">📦</span>
+                <span>Benim Taleplerim</span>
+            </a>
+
+            <a
+                href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                class="costume-sidebar-link
+                {% if request.resolver_match.url_name == 'gelen_kiralama_talepleri' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">⇩</span>
+                <span>Gelen Talepler</span>
+            </a>
+
+            <a
+                href="{% url 'conversations:sohbet_listesi' %}"
+                class="costume-sidebar-link
+                {% if request.resolver_match.namespace == 'conversations' %}
+                    active
+                {% endif %}"
+            >
+                <span class="costume-sidebar-icon">💬</span>
+
+                <span class="flex-grow-1">
+                    Mesajlar
+                </span>
+
+                <span class="costume-sidebar-badge">
+                    0
+                </span>
+            </a>
+
+        </nav>
+
+    </div>
+
+    <!-- Sidebar alt hesap alanı -->
+    <div class="costume-sidebar-footer">
+
+        <div class="dropdown">
+
+            <button
+                class="costume-sidebar-account"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+                <span class="costume-sidebar-avatar">
+                    {{ user.username|first|upper }}
+                </span>
+
+                <span class="costume-sidebar-account-text">
+                    <strong>{{ user.username }}</strong>
+                    <small>Hesabım</small>
+                </span>
+
+                <span class="costume-sidebar-more">
+                    ⋯
+                </span>
+            </button>
+
+            <ul class="dropdown-menu sidebar-account-menu">
+
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="{% url 'accounts:profil' %}"
+                    >
+                        Profilim
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="{% url 'accounts:panel' %}"
+                    >
+                        Kullanıcı Paneli
+                    </a>
+                </li>
+
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+
+                <li>
+                    <form
+                        method="POST"
+                        action="{% url 'accounts:cikis' %}"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="dropdown-item text-danger"
+                        >
+                            Çıkış Yap
+                        </button>
+                    </form>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- Mobil üst bar -->
+<header class="costume-mobile-header d-lg-none">
+
+    <button
+        type="button"
+        class="costume-mobile-menu-button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobilSidebar"
+        aria-controls="mobilSidebar"
+        aria-label="Menüyü aç"
+    >
+        ☰
+    </button>
+
+    <a
+        href="{% url 'products:home' %}"
+        class="costume-mobile-brand"
+    >
+        CostumeHub
+    </a>
+
+    <a
+        href="{% url 'conversations:sohbet_listesi' %}"
+        class="costume-mobile-message"
+        aria-label="Mesajlar"
+    >
+        💬
+    </a>
+
+</header>
+
+
+<!-- Mobil soldan açılan sidebar -->
+<div
+    class="offcanvas offcanvas-start costume-mobile-sidebar"
+    tabindex="-1"
+    id="mobilSidebar"
+    aria-labelledby="mobilSidebarBaslik"
+>
+
+    <div class="offcanvas-header">
+
+        <h2
+            class="offcanvas-title"
+            id="mobilSidebarBaslik"
+        >
+            CostumeHub
+        </h2>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Kapat"
+        ></button>
+
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column">
+
+        <nav class="costume-sidebar-menu">
+
+            <a
+                href="{% url 'products:home' %}"
+                class="costume-sidebar-link"
+            >
+                <span class="costume-sidebar-icon">⌂</span>
+                Ana Sayfa
+            </a>
+
+            <a
+                href="{% url 'products:ilan_listesi' %}"
+                class="costume-sidebar-link"
+            >
+                <span class="costume-sidebar-icon">🎭</span>
+                Kostümler
+            </a>
+            <div class="costume-sidebar-categories">
+
+    <button
+        type="button"
+        class="costume-sidebar-link costume-category-toggle"
+        data-bs-toggle="collapse"
+        data-bs-target="#sidebarKategoriler"
+        aria-expanded="false"
+        aria-controls="sidebarKategoriler"
+    >
+        <span class="costume-sidebar-icon">▦</span>
+
+        <span class="flex-grow-1 text-start">
+            Kategoriler
+        </span>
+
+        <span class="costume-category-arrow">
+            ›
+        </span>
+    </button>
+
+    <div
+        class="collapse"
+        id="sidebarKategoriler"
+    >
+        <div class="costume-category-list">
+
+            {% for kategori in navbar_ana_kategoriler %}
+
+                <a
+                    href="{% url 'products:ilan_listesi' %}?kategori={{ kategori.id }}"
+                    class="costume-category-link"
+                >
+                    <span>
+                        {{ kategori.ad }}
+                    </span>
+
+                    <span>
+                        ›
+                    </span>
+                </a>
+
+            {% empty %}
+
+                <span class="costume-category-empty">
+                    Henüz kategori bulunmuyor.
+                </span>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+            <a
+                href="{% url 'accounts:panel' %}"
+                class="costume-sidebar-link"
+            >
+                <span class="costume-sidebar-icon">▦</span>
+                Panelim
+            </a>
+
+            <a
+                href="{% url 'products:ilan_olustur' %}"
+                class="costume-sidebar-link costume-sidebar-primary"
+            >
+                <span class="costume-sidebar-icon">＋</span>
+                Yeni İlan Ver
+            </a>
+
+            <div class="costume-sidebar-divider"></div>
+
+            <a
+                href="{% url 'favorites:favorilerim' %}"
+                class="costume-sidebar-link"
+            >
+                <span class="costume-sidebar-icon">♡</span>
+                Favorilerim
+            </a>
+
+            <a
+                href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+                class="costume-sidebar-link"
+            >
+                <span class="costume-sidebar-icon">📦</span>
+                Benim Taleplerim
+            </a>
+
+            <a
+                href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                class="costume-sidebar-link"
+            >
+                <span class="costume-sidebar-icon">⇩</span>
+                Gelen Talepler
+            </a>
+
+            <a
+                href="{% url 'conversations:sohbet_listesi' %}"
+                class="costume-sidebar-link"
+            >
+                <span class="costume-sidebar-icon">💬</span>
+
+                <span class="flex-grow-1">
+                    Mesajlar
+                </span>
+
+                <span class="costume-sidebar-badge">
+                    0
+                </span>
+            </a>
+
+        </nav>
+
+        <div class="costume-mobile-account mt-auto">
+
+            <a
+                href="{% url 'accounts:profil' %}"
+                class="costume-sidebar-account"
+            >
+                <span class="costume-sidebar-avatar">
+                    {{ user.username|first|upper }}
+                </span>
+
+                <span class="costume-sidebar-account-text">
+                    <strong>{{ user.username }}</strong>
+                    <small>Profilimi görüntüle</small>
+                </span>
+            </a>
+
+            <form
+                method="POST"
+                action="{% url 'accounts:cikis' %}"
+                class="mt-2"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-outline-danger w-100"
+                >
+                    Çıkış Yap
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

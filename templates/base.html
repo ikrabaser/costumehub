@@ -31,11 +31,25 @@
 
 </head>
 
-<body>
+<body class="{% if user.is_authenticated %}costume-app-layout{% endif %}">
+
+    {% if user.is_authenticated %}
+
+    {% include "partials/sidebar.html" %}
+
+    <div class="costume-app-topbar">
+        {% include "partials/navbar.html" %}
+    </div>
+
+{% else %}
 
     {% include "partials/navbar.html" %}
 
-    <main>
+{% endif %}
+
+<div class="{% if user.is_authenticated %}costume-app-content{% endif %}">
+
+<main>
 
         {% if messages %}
             <div class="container mt-3">
@@ -69,6 +83,8 @@
     </main>
 
     {% include "partials/footer.html" %}
+
+</div>
 
     <!-- Bootstrap JavaScript -->
     <script
