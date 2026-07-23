@@ -279,6 +279,81 @@
                     </div>
 
                 </div>
+                <section class="dashboard-content-card mt-4">
+
+    <div class="dashboard-section-heading">
+        <div>
+            <span class="dashboard-section-label">
+                Analizler
+            </span>
+
+            <h2>İlan İstatistikleri</h2>
+        </div>
+    </div>
+
+    <div class="dashboard-chart-container">
+    <canvas id="ilanChart"></canvas>
+</div>
+
+{{ ilan_grafik_etiketleri|json_script:"ilan-chart-labels" }}
+{{ ilan_grafik_verileri|json_script:"ilan-chart-data" }}
+
+</section>
+<div class="row g-4 mt-0">
+
+    <!-- Talep durumları -->
+    <div class="col-12 col-xl-5">
+
+        <section class="dashboard-content-card h-100">
+
+            <div class="dashboard-section-heading">
+                <div>
+                    <span class="dashboard-section-label">
+                        Analizler
+                    </span>
+
+                    <h2>Talep Durumları</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-chart-container dashboard-chart-small">
+                <canvas id="talepDurumChart"></canvas>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Kategori dağılımı -->
+    <div class="col-12 col-xl-7">
+
+        <section class="dashboard-content-card h-100">
+
+            <div class="dashboard-section-heading">
+                <div>
+                    <span class="dashboard-section-label">
+                        Analizler
+                    </span>
+
+                    <h2>Kategori Dağılımı</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-chart-container dashboard-chart-small">
+                <canvas id="kategoriChart"></canvas>
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{{ talep_grafik_etiketleri|json_script:"talep-chart-labels" }}
+{{ talep_grafik_verileri|json_script:"talep-chart-data" }}
+
+{{ kategori_grafik_etiketleri|json_script:"kategori-chart-labels" }}
+{{ kategori_grafik_verileri|json_script:"kategori-chart-data" }}
                 <!-- Son aktiviteler -->
 <section class="dashboard-content-card mt-4">
 
