@@ -35,75 +35,6 @@
             <!-- Sağ içerik -->
             <div class="col-12">
 
-                <!-- Özet kartları -->
-                <div class="row g-3 mb-4">
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'products:ilan_olustur' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">
-    <i class="bi bi-bag"></i>
-</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>İlanlarım</strong>
-                                <small>İlanlarını yönet</small>
-                            </span>
-                        </a>
-                    </div>
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'rentals:gelen_kiralama_talepleri' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">
-    <i class="bi bi-arrow-down-circle"></i>
-</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>Gelen Talepler</strong>
-                                <small>Yeni istekleri gör</small>
-                            </span>
-                        </a>
-                    </div>
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'conversations:sohbet_listesi' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">
-    <i class="bi bi-chat-dots"></i>
-</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>Mesajlarım</strong>
-                                <small>Sohbetlerini aç</small>
-                            </span>
-                        </a>
-                    </div>
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'favorites:favorilerim' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">
-    <i class="bi bi-heart"></i>
-</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>Favorilerim</strong>
-                                <small>Kaydettiklerini gör</small>
-                            </span>
-                        </a>
-                    </div>
-
-                </div>
-
                 <div class="row g-4">
 
                     <!-- Hızlı işlemler -->
@@ -244,13 +175,6 @@
                             karar vermesini kolaylaştırır.
                         </p>
                     </div>
-
-                    <a
-                        href="{% url 'products:ilan_olustur' %}"
-                        class="btn btn-light"
-                    >
-                        İlan Oluştur
-                    </a>
 
                 </section>
 
