@@ -1215,29 +1215,6 @@ body {
     line-height: 1.6;
 }
 /* ==========================================
-   Sayfayı ekran yüksekliğine tamamlama
-========================================== */
-
-html,
-body {
-    min-height: 100%;
-}
-
-body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-body > .costume-app-content,
-body > main {
-    flex: 1;
-}
-
-body:not(.costume-app-layout) > main {
-    flex: 1;
-}
-/* ==========================================
    Public sayfalarda footer konumu
 ========================================== */
 
