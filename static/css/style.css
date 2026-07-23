@@ -1168,3 +1168,40 @@ body {
 .costume-sidebar-menu {
     font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
+/* ==========================================
+   Dashboard karşılama alanı
+========================================== */
+
+.dashboard-page .container {
+    padding-top: 28px !important;
+}
+
+.dashboard-welcome {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: auto;
+    padding: 30px 32px;
+    border-radius: 20px;
+}
+
+.dashboard-welcome > div {
+    width: 100%;
+}
+
+.dashboard-eyebrow {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.dashboard-title {
+    margin-bottom: 8px;
+    font-size: clamp(1.8rem, 3vw, 2.35rem);
+    line-height: 1.15;
+}
+
+.dashboard-description {
+    max-width: 720px;
+    line-height: 1.6;
+}
+
