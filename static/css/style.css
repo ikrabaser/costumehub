@@ -1584,4 +1584,22 @@ a.dashboard-activity-item:hover {
     #nasil-calisir p {
         margin-bottom: 0;
     }
+    .rental-card-header {
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.rental-card-title {
+    display: inline-block;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.rental-card-status {
+    align-self: flex-start;
+    flex-shrink: 0;
+}
 }

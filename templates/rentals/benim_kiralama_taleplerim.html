@@ -35,64 +35,64 @@
                             <div class="card-body p-4">
 
                                 <div
-                                    class="d-flex justify-content-between
-                                           align-items-start gap-3 mb-3"
-                                >
+    class="rental-card-header d-flex justify-content-between
+           align-items-start gap-3 mb-3"
+>
 
                                     <a
                                         href="{% url 'products:ilan_detay' talep.ilan.id %}"
                                         class="text-decoration-none"
                                     >
-                                        <span class="badge text-bg-warning">
+                                        <span class="badge text-bg-warning rental-card-title">
                                             {{ talep.ilan.baslik }}
                                         </span>
                                     </a>
 
                                     {% if talep.durum == "BEKLIYOR" %}
 
-                                        <span class="badge text-bg-secondary">
+                                        <span class="badge text-bg-secondary rental-card-status">
                                             Bekliyor
                                         </span>
 
                                     {% elif talep.durum == "KABUL_EDILDI" %}
 
-                                        <span class="badge text-bg-success">
+                                        <span class="badge text-bg-success rental-card-status">
                                             Kabul Edildi
                                         </span>
 
                                     {% elif talep.durum == "TESLIM_EDILDI" %}
 
-                                        <span class="badge text-bg-primary">
+                                        <span class="badge text-bg-primary rental-card-status">
                                             Teslim Edildi
                                         </span>
 
                                     {% elif talep.durum == "IADE_EDILDI" %}
 
-                                        <span class="badge text-bg-info">
+                                        <span class="badge text-bg-info rental-card-status">
                                             İade Edildi
                                         </span>
 
                                     {% elif talep.durum == "TAMAMLANDI" %}
 
-                                        <span class="badge text-bg-dark">
+                                        <span class="badge text-bg-dark rental-card-status">
                                             Tamamlandı
                                         </span>
 
                                     {% elif talep.durum == "REDDEDILDI" %}
 
-                                        <span class="badge text-bg-danger">
+                                        <span class="badge text-bg-danger rental-card-status">
                                             Reddedildi
                                         </span>
 
                                     {% elif talep.durum == "IPTAL_EDILDI" %}
 
-                                        <span class="badge text-bg-danger">
+                                        <span class="badge text-bg-danger rental-card-status">
                                             İptal Edildi
                                         </span>
 
                                     {% else %}
 
-                                        <span class="badge text-bg-light border">
+                                        <span class="badge text-bg-light border rental-card-status">
                                             {{ talep.get_durum_display }}
                                         </span>
 
