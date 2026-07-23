@@ -955,3 +955,182 @@ body {
         font-size: 1.05rem;
     }
 }
+/* ===========================
+   Sidebar Icons
+=========================== */
+
+.costume-sidebar-icon{
+    width:22px;
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    flex-shrink:0;
+    font-size:1rem;
+}
+
+.costume-sidebar-link{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.costume-sidebar-link i{
+    font-size:1rem;
+}
+
+.costume-sidebar-link.active i{
+    color:#fff;
+}
+/* ===========================
+   Mobil Header Düzeltmesi
+=========================== */
+
+.costume-mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 1060;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: 72px;
+    padding: 0 16px;
+
+    border-bottom: 1px solid #e8e9ef;
+    background-color: #ffffff;
+    box-shadow: 0 4px 14px rgba(33, 37, 41, 0.06);
+}
+
+.costume-mobile-menu-button,
+.costume-mobile-message {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+
+    border: 1px solid #e1e3e8;
+    border-radius: 11px;
+
+    background-color: #ffffff;
+    color: #212529;
+    text-decoration: none;
+}
+
+.costume-mobile-menu-button {
+    font-size: 0;
+}
+
+.costume-mobile-menu-button::before {
+    content: "\F479";
+    font-family: "bootstrap-icons";
+    font-size: 1.25rem;
+}
+
+.costume-mobile-message {
+    position: relative;
+    font-size: 0;
+}
+
+.costume-mobile-message::before {
+    content: "\F268";
+    font-family: "bootstrap-icons";
+    font-size: 1.1rem;
+}
+
+.costume-mobile-brand {
+    color: #212529;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+}
+
+.costume-mobile-brand:hover {
+    color: #212529;
+    text-decoration: none;
+}
+
+/* ===========================
+   Mobil hesap kartı
+=========================== */
+
+.costume-mobile-account {
+    padding-top: 18px;
+    border-top: 1px solid #eceef3;
+}
+
+.costume-mobile-account-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px;
+    border: 1px solid #e7e9ef;
+    border-radius: 14px;
+
+    background-color: #ffffff;
+    color: #212529;
+    text-decoration: none;
+}
+
+.costume-mobile-account-card:hover {
+    background-color: #f8f7ff;
+    color: #212529;
+}
+
+.costume-mobile-account-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.costume-mobile-account-info strong {
+    color: #212529;
+    font-size: 0.95rem;
+    font-weight: 800;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.costume-mobile-account-info small {
+    margin-top: 2px;
+    color: #7b8190;
+    font-size: 0.78rem;
+}
+
+.costume-mobile-account-card > i {
+    color: #8b909c;
+    font-size: 0.9rem;
+}
+
+.costume-mobile-logout-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+
+    border: 1px solid #f0c5ca;
+    border-radius: 12px;
+
+    background-color: #fff8f8;
+    color: #c93c49;
+
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.costume-mobile-logout-button:hover {
+    border-color: #dc3545;
+    background-color: #fff0f1;
+    color: #b52d3a;
+}

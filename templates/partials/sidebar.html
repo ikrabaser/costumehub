@@ -221,7 +221,7 @@
         class="costume-mobile-message"
         aria-label="Mesajlar"
     >
-        💬
+        Mesajlar
     </a>
 
 </header>
@@ -261,7 +261,9 @@
                 href="{% url 'products:home' %}"
                 class="costume-sidebar-link"
             >
-                <span class="costume-sidebar-icon">⌂</span>
+                <span class="costume-sidebar-icon">
+    <i class="bi bi-house-door"></i>
+</span>
                 Ana Sayfa
             </a>
 
@@ -269,7 +271,9 @@
                 href="{% url 'products:ilan_listesi' %}"
                 class="costume-sidebar-link"
             >
-                <span class="costume-sidebar-icon">🎭</span>
+                <span class="costume-sidebar-icon">
+    <i class="bi bi-stars"></i>
+</span>
                 Kostümler
             </a>
             
@@ -277,7 +281,9 @@
                 href="{% url 'accounts:panel' %}"
                 class="costume-sidebar-link"
             >
-                <span class="costume-sidebar-icon">▦</span>
+               <span class="costume-sidebar-icon">
+    <i class="bi bi-grid"></i>
+</span>
                 Panelim
             </a>
 
@@ -285,7 +291,9 @@
                 href="{% url 'products:ilan_olustur' %}"
                 class="costume-sidebar-link costume-sidebar-primary"
             >
-                <span class="costume-sidebar-icon">＋</span>
+               <span class="costume-sidebar-icon">
+    <i class="bi bi-plus-lg"></i>
+</span>
                 Yeni İlan Ver
             </a>
 
@@ -295,7 +303,9 @@
                 href="{% url 'favorites:favorilerim' %}"
                 class="costume-sidebar-link"
             >
-                <span class="costume-sidebar-icon">♡</span>
+               <span class="costume-sidebar-icon">
+    <i class="bi bi-heart"></i>
+</span>
                 Favorilerim
             </a>
 
@@ -303,7 +313,9 @@
                 href="{% url 'rentals:benim_kiralama_taleplerim' %}"
                 class="costume-sidebar-link"
             >
-                <span class="costume-sidebar-icon">📦</span>
+                <span class="costume-sidebar-icon">
+    <i class="bi bi-box-seam"></i>
+</span>
                 Benim Taleplerim
             </a>
 
@@ -311,7 +323,9 @@
                 href="{% url 'rentals:gelen_kiralama_talepleri' %}"
                 class="costume-sidebar-link"
             >
-                <span class="costume-sidebar-icon">⇩</span>
+               <span class="costume-sidebar-icon">
+    <i class="bi bi-inbox"></i>
+</span>
                 Gelen Talepler
             </a>
 
@@ -319,7 +333,9 @@
                 href="{% url 'conversations:sohbet_listesi' %}"
                 class="costume-sidebar-link"
             >
-                <span class="costume-sidebar-icon">💬</span>
+                <span class="costume-sidebar-icon">
+    <i class="bi bi-chat-dots"></i>
+</span>
 
                 <span class="flex-grow-1">
                     Mesajlar
@@ -334,37 +350,39 @@
 
         <div class="costume-mobile-account mt-auto">
 
-            <a
-                href="{% url 'accounts:profil' %}"
-                class="costume-sidebar-account"
-            >
-                <span class="costume-sidebar-avatar">
-                    {{ user.username|first|upper }}
-                </span>
+    <a
+        href="{% url 'accounts:profil' %}"
+        class="costume-mobile-account-card"
+    >
+        <span class="costume-sidebar-avatar">
+            {{ user.username|first|upper }}
+        </span>
 
-                <span class="costume-sidebar-account-text">
-                    <strong>{{ user.username }}</strong>
-                    <small>Profilimi görüntüle</small>
-                </span>
-            </a>
+        <span class="costume-mobile-account-info">
+            <strong>{{ user.username }}</strong>
+            <small>Profili görüntüle</small>
+        </span>
 
-            <form
-                method="POST"
-                action="{% url 'accounts:cikis' %}"
-                class="mt-2"
-            >
-                {% csrf_token %}
+        <i class="bi bi-chevron-right"></i>
+    </a>
 
-                <button
-                    type="submit"
-                    class="btn btn-outline-danger w-100"
-                >
-                    Çıkış Yap
-                </button>
-            </form>
+    <form
+        method="POST"
+        action="{% url 'accounts:cikis' %}"
+        class="mt-2"
+    >
+        {% csrf_token %}
 
-        </div>
+        <button
+            type="submit"
+            class="costume-mobile-logout-button"
+        >
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Çıkış Yap</span>
+        </button>
+    </form>
 
+</div>
     </div>
 
 </div>
