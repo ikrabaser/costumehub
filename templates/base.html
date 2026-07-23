@@ -58,6 +58,8 @@
 <div class="
     {% if user.is_authenticated and request.resolver_match.url_name != 'home' %}
         costume-app-content
+    {% else %}
+        costume-public-content
     {% endif %}
 ">
 
