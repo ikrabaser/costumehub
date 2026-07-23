@@ -112,6 +112,19 @@ def panel(request):
     kullanici_ilanlari = Ilan.objects.filter(
         ilan_sahibi=request.user
     )
+    son_ilanlar = kullanici_ilanlari.select_related(
+        "kategori"
+    )[:3]
+
+    son_gelen_talepler = (
+        KiralamaTalebi.objects.filter(
+            ilan__ilan_sahibi=request.user
+        )
+        .select_related(
+            "ilan",
+            "kiraci",
+        )[:3]
+    )
 
     context = {
         "toplam_ilan_sayisi": kullanici_ilanlari.count(),
@@ -130,6 +143,8 @@ def panel(request):
                 "IADE_EDILDI",
             ],
         ).count(),
+        "son_ilanlar": son_ilanlar,
+        "son_gelen_talepler": son_gelen_talepler,
     }
 
     return render(

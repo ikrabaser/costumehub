@@ -279,6 +279,155 @@
                     </div>
 
                 </div>
+                <!-- Son aktiviteler -->
+<section class="dashboard-content-card mt-4">
+
+    <div class="dashboard-section-heading">
+        <div>
+            <span class="dashboard-section-label">
+                Güncel
+            </span>
+
+            <h2>Son Aktiviteler</h2>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Son ilanlar -->
+        <div class="col-12 col-xl-6">
+
+            <div class="dashboard-activity-group">
+
+                <div class="dashboard-activity-title">
+                    <h3>Son İlanlarım</h3>
+
+                    <a href="{% url 'products:ilan_listesi' %}">
+                        Tümünü Gör
+                    </a>
+                </div>
+
+                <div class="dashboard-activity-list">
+
+                    {% for ilan in son_ilanlar %}
+
+                        <a
+                            href="{% url 'products:ilan_detay' ilan.id %}"
+                            class="dashboard-activity-item"
+                        >
+                            <span class="dashboard-activity-icon">
+                                <i class="bi bi-bag"></i>
+                            </span>
+
+                            <span class="dashboard-activity-content">
+                                <strong>
+                                    {{ ilan.baslik }}
+                                </strong>
+
+                                <small>
+                                    {{ ilan.get_durum_display }}
+                                    ·
+                                    {{ ilan.olusturulma_tarihi|date:"d.m.Y" }}
+                                </small>
+                            </span>
+
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    {% empty %}
+
+                        <div class="dashboard-activity-empty">
+                            <i class="bi bi-bag"></i>
+
+                            <p>Henüz oluşturduğun bir ilan yok.</p>
+
+                            <a
+                                href="{% url 'products:ilan_olustur' %}"
+                                class="btn btn-sm btn-outline-dark"
+                            >
+                                İlk İlanını Oluştur
+                            </a>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Son gelen talepler -->
+        <div class="col-12 col-xl-6">
+
+            <div class="dashboard-activity-group">
+
+                <div class="dashboard-activity-title">
+                    <h3>Son Gelen Talepler</h3>
+
+                    <a
+                        href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                    >
+                        Tümünü Gör
+                    </a>
+                </div>
+
+                <div class="dashboard-activity-list">
+
+                    {% for talep in son_gelen_talepler %}
+
+                        <div class="dashboard-activity-item">
+
+                            <span class="dashboard-activity-icon">
+                                <i class="bi bi-inbox"></i>
+                            </span>
+
+                            <span class="dashboard-activity-content">
+                                <strong>
+                                    {{ talep.ilan.baslik }}
+                                </strong>
+
+                                <small>
+                                    {{ talep.kiraci.username }}
+                                    ·
+                                    {{ talep.get_durum_display }}
+                                    ·
+                                    {{ talep.olusturulma_tarihi|date:"d.m.Y" }}
+                                </small>
+                            </span>
+
+                            <span
+                                class="dashboard-activity-status
+                                {% if talep.durum == 'BEKLIYOR' %}
+                                    is-waiting
+                                {% elif talep.durum == 'KABUL_EDILDI' %}
+                                    is-approved
+                                {% endif %}"
+                            >
+                                {{ talep.get_durum_display }}
+                            </span>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="dashboard-activity-empty">
+                            <i class="bi bi-inbox"></i>
+
+                            <p>Henüz ilanlarına gelen bir talep yok.</p>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
                 <!-- Alt bilgilendirme alanı -->
                 <section class="dashboard-tip-card mt-4">
