@@ -30,6 +30,121 @@
 
         </div>
 
+   <!-- İstatistik kartları -->
+<div class="row g-3 mb-4">
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'products:ilan_listesi' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-bag"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ toplam_ilan_sayisi|default:0 }}</strong>
+                    <small>Toplam İlan</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    İlanlarını görüntüle
+                </span>
+            </span>
+
+            <span class="dashboard-mini-bars" aria-hidden="true">
+                <span style="height: 35%;"></span>
+                <span style="height: 60%;"></span>
+                <span style="height: 48%;"></span>
+                <span style="height: 82%;"></span>
+                <span style="height: 68%;"></span>
+            </span>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-inbox"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ bekleyen_talep_sayisi|default:0 }}</strong>
+                    <small>Bekleyen Talep</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    Yeni istekleri gör
+                </span>
+            </span>
+
+            <span class="dashboard-mini-pie" aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'products:ilan_listesi' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-megaphone"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ yayindaki_ilan_sayisi|default:0 }}</strong>
+                    <small>Yayındaki İlan</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    Aktif ilanlarını incele
+                </span>
+            </span>
+
+            <span class="dashboard-mini-donut" aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-box-seam"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ aktif_kiralama_sayisi|default:0 }}</strong>
+                    <small>Aktif Kiralama</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    Süreci takip et
+                </span>
+            </span>
+
+            <svg
+                class="dashboard-mini-line"
+                viewBox="0 0 80 40"
+                aria-hidden="true"
+            >
+                <polyline
+                    points="2,31 15,26 27,29 40,17 53,22 66,10 78,14"
+                ></polyline>
+            </svg>
+        </a>
+    </div>
+
+</div>
+
         <div class="row g-4">
 
             <!-- Sağ içerik -->

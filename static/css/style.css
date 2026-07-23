@@ -1232,5 +1232,157 @@ body:not(.costume-app-layout) {
 
 .costume-public-content main {
     flex: 1;
+}t
+/* ==========================================
+   Dashboard metrik kartları
+========================================== */
+
+.dashboard-metric-card {
+    min-height: 108px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid #e8e8ef;
+    border-radius: 16px;
+    background-color: #ffffff;
+    color: #212529;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(33, 37, 41, 0.05);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.dashboard-metric-card:hover {
+    color: #212529;
+    transform: translateY(-3px);
+    border-color: #d9d0ff;
+    box-shadow: 0 12px 30px rgba(33, 37, 41, 0.09);
+}
+
+.dashboard-metric-icon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background-color: #f2efff;
+    color: #6f4cff;
+    font-size: 20px;
+}
+
+.dashboard-metric-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.dashboard-metric-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.dashboard-metric-heading strong {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.dashboard-metric-heading small {
+    color: #495057;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.dashboard-metric-description {
+    display: block;
+    margin-top: 7px;
+    color: #8a8f98;
+    font-size: 11px;
+}
+
+.dashboard-mini-bars {
+    width: 54px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.dashboard-mini-bars span {
+    width: 7px;
+    border-radius: 3px 3px 0 0;
+    background-color: #273b59;
+}
+
+.dashboard-mini-pie,
+.dashboard-mini-donut {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.dashboard-mini-pie {
+    background:
+        conic-gradient(
+            #273b59 0deg 245deg,
+            #e7eaf0 245deg 360deg
+        );
+}
+
+.dashboard-mini-donut {
+    position: relative;
+    background:
+        conic-gradient(
+            #273b59 0deg 285deg,
+            #e7eaf0 285deg 360deg
+        );
+}
+
+.dashboard-mini-donut::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border-radius: 50%;
+    background-color: #ffffff;
+}
+
+.dashboard-mini-line {
+    width: 58px;
+    height: 38px;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.dashboard-mini-line polyline {
+    fill: none;
+    stroke: #273b59;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-metric-card {
+        min-height: 96px;
+        padding: 16px;
+    }
+
+    .dashboard-metric-heading strong {
+        font-size: 22px;
+    }
+
+    .dashboard-mini-bars,
+    .dashboard-mini-pie,
+    .dashboard-mini-donut,
+    .dashboard-mini-line {
+        margin-left: auto;
+    }
 }
 
