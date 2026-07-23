@@ -28,98 +28,127 @@
                 </p>
             </div>
 
-            <div class="dashboard-welcome-actions">
-
-                <a
-                    href="{% url 'conversations:sohbet_listesi' %}"
-                    class="dashboard-notification-button"
-                    aria-label="Mesajlar"
-                >
-                    <span class="dashboard-action-icon">💬</span>
-                    <span>Mesajlar</span>
-
-                    <!-- Daha sonra gerçek okunmamış mesaj sayısı bağlanacak -->
-                    <span class="dashboard-notification-badge">
-                        0
-                    </span>
-                </a>
-
-                <a
-                    href="{% url 'products:ilan_olustur' %}"
-                    class="btn btn-dark dashboard-primary-button"
-                >
-                    + Yeni İlan Ver
-                </a>
-
-            </div>
-
         </div>
+
+   <!-- İstatistik kartları -->
+<div class="row g-3 mb-4">
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'products:ilan_listesi' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-bag"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ toplam_ilan_sayisi|default:0 }}</strong>
+                    <small>Toplam İlan</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    İlanlarını görüntüle
+                </span>
+            </span>
+
+            <span class="dashboard-mini-bars" aria-hidden="true">
+                <span style="height: 35%;"></span>
+                <span style="height: 60%;"></span>
+                <span style="height: 48%;"></span>
+                <span style="height: 82%;"></span>
+                <span style="height: 68%;"></span>
+            </span>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-inbox"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ bekleyen_talep_sayisi|default:0 }}</strong>
+                    <small>Bekleyen Talep</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    Yeni istekleri gör
+                </span>
+            </span>
+
+            <span class="dashboard-mini-pie" aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'products:ilan_listesi' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-megaphone"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ yayindaki_ilan_sayisi|default:0 }}</strong>
+                    <small>Yayındaki İlan</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    Aktif ilanlarını incele
+                </span>
+            </span>
+
+            <span class="dashboard-mini-donut" aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <a
+            href="{% url 'rentals:benim_kiralama_taleplerim' %}"
+            class="dashboard-metric-card"
+        >
+            <span class="dashboard-metric-icon">
+                <i class="bi bi-box-seam"></i>
+            </span>
+
+            <span class="dashboard-metric-content">
+                <span class="dashboard-metric-heading">
+                    <strong>{{ aktif_kiralama_sayisi|default:0 }}</strong>
+                    <small>Aktif Kiralama</small>
+                </span>
+
+                <span class="dashboard-metric-description">
+                    Süreci takip et
+                </span>
+            </span>
+
+            <svg
+                class="dashboard-mini-line"
+                viewBox="0 0 80 40"
+                aria-hidden="true"
+            >
+                <polyline
+                    points="2,31 15,26 27,29 40,17 53,22 66,10 78,14"
+                ></polyline>
+            </svg>
+        </a>
+    </div>
+
+</div>
 
         <div class="row g-4">
 
             <!-- Sağ içerik -->
             <div class="col-12">
-
-                <!-- Özet kartları -->
-                <div class="row g-3 mb-4">
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'products:ilan_olustur' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">👗</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>İlanlarım</strong>
-                                <small>İlanlarını yönet</small>
-                            </span>
-                        </a>
-                    </div>
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'rentals:gelen_kiralama_talepleri' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">📥</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>Gelen Talepler</strong>
-                                <small>Yeni istekleri gör</small>
-                            </span>
-                        </a>
-                    </div>
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'conversations:sohbet_listesi' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">💬</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>Mesajlarım</strong>
-                                <small>Sohbetlerini aç</small>
-                            </span>
-                        </a>
-                    </div>
-
-                    <div class="col-6 col-xl-3">
-                        <a
-                            href="{% url 'favorites:favorilerim' %}"
-                            class="dashboard-stat-card"
-                        >
-                            <span class="dashboard-stat-icon">❤️</span>
-
-                            <span class="dashboard-stat-content">
-                                <strong>Favorilerim</strong>
-                                <small>Kaydettiklerini gör</small>
-                            </span>
-                        </a>
-                    </div>
-
-                </div>
 
                 <div class="row g-4">
 
@@ -144,7 +173,9 @@
                                     href="{% url 'products:ilan_olustur' %}"
                                     class="dashboard-quick-action"
                                 >
-                                    <span class="dashboard-quick-icon">➕</span>
+                                    <span class="dashboard-quick-icon">
+    <i class="bi bi-plus-lg"></i>
+</span>
 
                                     <span>
                                         <strong>Yeni ilan oluştur</strong>
@@ -160,7 +191,9 @@
                                     href="{% url 'rentals:gelen_kiralama_talepleri' %}"
                                     class="dashboard-quick-action"
                                 >
-                                    <span class="dashboard-quick-icon">📥</span>
+                                   <span class="dashboard-quick-icon">
+    <i class="bi bi-inbox"></i>
+</span>
 
                                     <span>
                                         <strong>Gelen talepleri incele</strong>
@@ -176,7 +209,9 @@
                                     href="{% url 'conversations:sohbet_listesi' %}"
                                     class="dashboard-quick-action"
                                 >
-                                    <span class="dashboard-quick-icon">💬</span>
+                                    <span class="dashboard-quick-icon">
+    <i class="bi bi-chat-dots"></i>
+</span>
 
                                     <span>
                                         <strong>Mesajlara git</strong>
@@ -244,6 +279,230 @@
                     </div>
 
                 </div>
+                <section class="dashboard-content-card mt-4">
+
+    <div class="dashboard-section-heading">
+        <div>
+            <span class="dashboard-section-label">
+                Analizler
+            </span>
+
+            <h2>İlan İstatistikleri</h2>
+        </div>
+    </div>
+
+    <div class="dashboard-chart-container">
+    <canvas id="ilanChart"></canvas>
+</div>
+
+{{ ilan_grafik_etiketleri|json_script:"ilan-chart-labels" }}
+{{ ilan_grafik_verileri|json_script:"ilan-chart-data" }}
+
+</section>
+<div class="row g-4 mt-0">
+
+    <!-- Talep durumları -->
+    <div class="col-12 col-xl-5">
+
+        <section class="dashboard-content-card h-100">
+
+            <div class="dashboard-section-heading">
+                <div>
+                    <span class="dashboard-section-label">
+                        Analizler
+                    </span>
+
+                    <h2>Talep Durumları</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-chart-container dashboard-chart-small">
+                <canvas id="talepDurumChart"></canvas>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Kategori dağılımı -->
+    <div class="col-12 col-xl-7">
+
+        <section class="dashboard-content-card h-100">
+
+            <div class="dashboard-section-heading">
+                <div>
+                    <span class="dashboard-section-label">
+                        Analizler
+                    </span>
+
+                    <h2>Kategori Dağılımı</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-chart-container dashboard-chart-small">
+                <canvas id="kategoriChart"></canvas>
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{{ talep_grafik_etiketleri|json_script:"talep-chart-labels" }}
+{{ talep_grafik_verileri|json_script:"talep-chart-data" }}
+
+{{ kategori_grafik_etiketleri|json_script:"kategori-chart-labels" }}
+{{ kategori_grafik_verileri|json_script:"kategori-chart-data" }}
+                <!-- Son aktiviteler -->
+<section class="dashboard-content-card mt-4">
+
+    <div class="dashboard-section-heading">
+        <div>
+            <span class="dashboard-section-label">
+                Güncel
+            </span>
+
+            <h2>Son Aktiviteler</h2>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Son ilanlar -->
+        <div class="col-12 col-xl-6">
+
+            <div class="dashboard-activity-group">
+
+                <div class="dashboard-activity-title">
+                    <h3>Son İlanlarım</h3>
+
+                    <a href="{% url 'products:ilan_listesi' %}">
+                        Tümünü Gör
+                    </a>
+                </div>
+
+                <div class="dashboard-activity-list">
+
+                    {% for ilan in son_ilanlar %}
+
+                        <a
+                            href="{% url 'products:ilan_detay' ilan.id %}"
+                            class="dashboard-activity-item"
+                        >
+                            <span class="dashboard-activity-icon">
+                                <i class="bi bi-bag"></i>
+                            </span>
+
+                            <span class="dashboard-activity-content">
+                                <strong>
+                                    {{ ilan.baslik }}
+                                </strong>
+
+                                <small>
+                                    {{ ilan.get_durum_display }}
+                                    ·
+                                    {{ ilan.olusturulma_tarihi|date:"d.m.Y" }}
+                                </small>
+                            </span>
+
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    {% empty %}
+
+                        <div class="dashboard-activity-empty">
+                            <i class="bi bi-bag"></i>
+
+                            <p>Henüz oluşturduğun bir ilan yok.</p>
+
+                            <a
+                                href="{% url 'products:ilan_olustur' %}"
+                                class="btn btn-sm btn-outline-dark"
+                            >
+                                İlk İlanını Oluştur
+                            </a>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Son gelen talepler -->
+        <div class="col-12 col-xl-6">
+
+            <div class="dashboard-activity-group">
+
+                <div class="dashboard-activity-title">
+                    <h3>Son Gelen Talepler</h3>
+
+                    <a
+                        href="{% url 'rentals:gelen_kiralama_talepleri' %}"
+                    >
+                        Tümünü Gör
+                    </a>
+                </div>
+
+                <div class="dashboard-activity-list">
+
+                    {% for talep in son_gelen_talepler %}
+
+                        <div class="dashboard-activity-item">
+
+                            <span class="dashboard-activity-icon">
+                                <i class="bi bi-inbox"></i>
+                            </span>
+
+                            <span class="dashboard-activity-content">
+                                <strong>
+                                    {{ talep.ilan.baslik }}
+                                </strong>
+
+                                <small>
+                                    {{ talep.kiraci.username }}
+                                    ·
+                                    {{ talep.get_durum_display }}
+                                    ·
+                                    {{ talep.olusturulma_tarihi|date:"d.m.Y" }}
+                                </small>
+                            </span>
+
+                            <span
+                                class="dashboard-activity-status
+                                {% if talep.durum == 'BEKLIYOR' %}
+                                    is-waiting
+                                {% elif talep.durum == 'KABUL_EDILDI' %}
+                                    is-approved
+                                {% endif %}"
+                            >
+                                {{ talep.get_durum_display }}
+                            </span>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="dashboard-activity-empty">
+                            <i class="bi bi-inbox"></i>
+
+                            <p>Henüz ilanlarına gelen bir talep yok.</p>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
                 <!-- Alt bilgilendirme alanı -->
                 <section class="dashboard-tip-card mt-4">
@@ -261,13 +520,6 @@
                             karar vermesini kolaylaştırır.
                         </p>
                     </div>
-
-                    <a
-                        href="{% url 'products:ilan_olustur' %}"
-                        class="btn btn-light"
-                    >
-                        İlan Oluştur
-                    </a>
 
                 </section>
 

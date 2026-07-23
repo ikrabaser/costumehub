@@ -58,6 +58,8 @@
 <div class="
     {% if user.is_authenticated and request.resolver_match.url_name != 'home' %}
         costume-app-content
+    {% else %}
+        costume-public-content
     {% endif %}
 ">
 
@@ -94,9 +96,11 @@
 
     </main>
 
+    {% if not user.is_authenticated or request.resolver_match.url_name == "home" %}
     {% include "partials/footer.html" %}
-
+{% endif %}
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Bootstrap JavaScript -->
     <script
