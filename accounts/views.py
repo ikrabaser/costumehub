@@ -4,6 +4,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 
 from .forms import GirisFormu, KayitFormu, ProfilFormu
+from products.models import Ilan
+from rentals.models import KiralamaTalebi
 
 
 def kayit(request):
@@ -107,7 +109,31 @@ def profil(request):
     )
 @login_required
 def panel(request):
+    kullanici_ilanlari = Ilan.objects.filter(
+        ilan_sahibi=request.user
+    )
+
+    context = {
+        "toplam_ilan_sayisi": kullanici_ilanlari.count(),
+        "yayindaki_ilan_sayisi": kullanici_ilanlari.filter(
+            durum="YAYINDA"
+        ).count(),
+        "bekleyen_talep_sayisi": KiralamaTalebi.objects.filter(
+            ilan__ilan_sahibi=request.user,
+            durum="BEKLIYOR",
+        ).count(),
+        "aktif_kiralama_sayisi": KiralamaTalebi.objects.filter(
+            kiraci=request.user,
+            durum__in=[
+                "KABUL_EDILDI",
+                "TESLIM_EDILDI",
+                "IADE_EDILDI",
+            ],
+        ).count(),
+    }
+
     return render(
         request,
         "accounts/panel.html",
+        context,
     )

@@ -25,7 +25,37 @@ from .models import (
 
 
 def home(request):
-    return render(request, "products/home.html")
+    context = {}
+
+    if request.user.is_authenticated:
+        kullanici_ilanlari = Ilan.objects.filter(
+            ilan_sahibi=request.user
+        )
+
+        context = {
+            "toplam_ilan_sayisi": kullanici_ilanlari.count(),
+            "yayindaki_ilan_sayisi": kullanici_ilanlari.filter(
+                durum="YAYINDA"
+            ).count(),
+            "bekleyen_talep_sayisi": KiralamaTalebi.objects.filter(
+                ilan__ilan_sahibi=request.user,
+                durum="BEKLIYOR",
+            ).count(),
+            "aktif_kiralama_sayisi": KiralamaTalebi.objects.filter(
+                kiraci=request.user,
+                durum__in=[
+                    "KABUL_EDILDI",
+                    "TESLIM_EDILDI",
+                    "IADE_EDILDI",
+                ],
+            ).count(),
+        }
+
+    return render(
+        request,
+        "products/home.html",
+        context,
+    )
 @require_GET
 def kategori_alt_kategorileri(request, kategori_id):
     kategori = get_object_or_404(
