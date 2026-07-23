@@ -1220,6 +1220,7 @@ body {
 
 body:not(.costume-app-layout) {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -1558,5 +1559,29 @@ a.dashboard-activity-item:hover {
 @media (max-width: 767.98px) {
     .dashboard-chart-small {
         height: 270px;
+    }
+}
+/* ==========================================
+   Mobile improvements
+========================================== */
+
+@media (max-width: 576px) {
+
+    #nasil-calisir .card {
+        min-height: auto;
+    }
+
+    #nasil-calisir .card-body {
+        padding: 1.25rem !important;
+    }
+
+    #nasil-calisir h3 {
+        margin-top: 1rem !important;
+        margin-bottom: .75rem;
+        font-size: 1.75rem;
+    }
+
+    #nasil-calisir p {
+        margin-bottom: 0;
     }
 }
