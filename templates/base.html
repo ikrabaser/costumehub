@@ -94,8 +94,9 @@
 
     </main>
 
+    {% if not user.is_authenticated or request.resolver_match.url_name == "home" %}
     {% include "partials/footer.html" %}
-
+{% endif %}
 </div>
 
     <!-- Bootstrap JavaScript -->
