@@ -682,14 +682,27 @@ body {
     min-height:100vh;
 }
 
-.costume-sidebar-header{
-    padding:24px;
-    border-bottom:1px solid #ececec;
+.costume-sidebar-header {
+    height: 74px;
+    min-height: 74px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ececec;
+}
+
+.costume-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    line-height: 1;
 }
 
 .costume-sidebar-brand{
     font-size:24px;
-    font-weight:700;
+    font-weight:800;
     color:#212529;
     text-decoration:none;
 
@@ -835,6 +848,8 @@ body {
     position: sticky;
     top: 0;
     z-index: 1040;
+    height: 74px;
+    min-height: 74px;
     margin-left: 280px;
 }
 
@@ -853,27 +868,34 @@ body {
 =========================== */
 
 .costume-topbar {
-    min-height: 76px;
+    height: 74px;
+    min-height: 74px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 14px 32px;
+    padding: 0 32px;
+    box-sizing: border-box;
     border-bottom: 1px solid #e8e9ef;
     background-color: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(14px);
 }
 
 .costume-topbar-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     min-width: 0;
+    transform: translateY(-1px);
 }
 
 .costume-topbar-eyebrow {
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     color: #7454d6;
     font-size: 0.7rem;
     font-weight: 800;
+    line-height: 1;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
@@ -882,9 +904,11 @@ body {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 800;
+    line-height: 1.15;
 }
 
 .costume-topbar-actions {
+    height: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1133,4 +1157,14 @@ body {
     border-color: #dc3545;
     background-color: #fff0f1;
     color: #b52d3a;
+}
+/* ==========================================
+   Ortak yazı tipi
+========================================== */
+
+.costume-sidebar-brand,
+.costume-topbar-title,
+.costume-topbar-actions,
+.costume-sidebar-menu {
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
